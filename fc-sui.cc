@@ -4,6 +4,11 @@
 #include <iostream>
 
 
+void move(CardStorage *from, CardStorage *to) {
+    to->acceptCard(from->getCard());
+}
+
+
 int main() {
 	std::cout << "Hello world!\n";
 	Card c{Color::Heart, 2};
@@ -36,4 +41,10 @@ int main() {
 
     free_cell.acceptCard(std::make_unique<Card>(Color::Spade, 4));
     std::cout << "fc:" << free_cell << "\n";
+
+    std::cout << "Moving from fc to hd!\n";
+    move(&free_cell, &home_heart);
+    std::cout << "fc:" << free_cell << "\n";
+    std::cout << "hd:" << home_heart << "\n";
+
 }

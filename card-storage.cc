@@ -25,6 +25,17 @@ bool HomeDestination::acceptCard(std::unique_ptr<Card> card) {
 }
 
 
+std::unique_ptr<Card> HomeDestination::getCard() {
+	if (storage_.size() == 0) {
+		return nullptr;
+	} else {
+		std::unique_ptr<Card> card = std::move(storage_.back());
+		storage_.pop_back();
+		return card;
+	}
+}
+
+
 Card const * HomeDestination::top() const {
     return storage_.rbegin()->get();
 }
@@ -54,6 +65,16 @@ bool FreeCell::acceptCard(std::unique_ptr<Card> card) {
         cell_ = std::move(card);
 
     return move_ok;
+}
+
+std::unique_ptr<Card> FreeCell::getCard() {
+	if (cell_ == nullptr) {
+		return nullptr;
+	} else {
+		std::unique_ptr<Card> card = std::move(cell_);
+		cell_ = nullptr;
+		return card;
+	}
 }
 
 
