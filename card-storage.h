@@ -10,6 +10,7 @@
 
 class HomeDestination {
 public:
+	bool canAccept(const Card & card);
     bool acceptCard(std::unique_ptr<Card>);
     Card const * top() const;
     friend std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) ;
@@ -21,6 +22,7 @@ private:
 
 class FreeCell {
 public:
+	bool canAccept(const Card & card);
     bool acceptCard(std::unique_ptr<Card>);
     Card const * card() const;
 

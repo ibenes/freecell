@@ -1,21 +1,27 @@
 #include "card-storage.h"
 
-bool HomeDestination::acceptCard(std::unique_ptr<Card> card) {
+bool HomeDestination::canAccept(const Card & card) {
     if (storage_.size() == 0) {
-        if (card->value == 1) {
-            storage_.push_back(std::move(card));
+        if (card.value == 1) {
             return true;
         } else {
             return false;
         }
     } else {
-        if (card->color == top()->color && card->value == top()->value + 1) {
-            storage_.push_back(std::move(card));
+        if (card.color == top()->color && card.value == top()->value + 1) {
             return true;
         } else {
             return false;
         }
     }
+}
+
+bool HomeDestination::acceptCard(std::unique_ptr<Card> card) {
+	auto move_ok = canAccept(*card);
+	if (move_ok) 
+		storage_.push_back(std::move(card));
+
+	return move_ok;
 }
 
 
@@ -34,13 +40,20 @@ std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) {
 }
 
 
-bool FreeCell::acceptCard(std::unique_ptr<Card> card) {
+bool FreeCell::canAccept(const Card & card) {
     if (cell_ == nullptr) {
-        cell_ = std::move(card);
         return true;
     } else {
         return false;
     }
+}
+
+bool FreeCell::acceptCard(std::unique_ptr<Card> card) {
+	auto move_ok = canAccept(*card);
+    if (move_ok)
+        cell_ = std::move(card);
+
+    return move_ok;
 }
 
 
