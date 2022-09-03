@@ -8,10 +8,18 @@
 #include <vector>
 
 
-class HomeDestination {
+class CardStorage {
 public:
-	bool canAccept(const Card & card);
-    bool acceptCard(std::unique_ptr<Card>);
+	virtual bool canAccept(const Card & card) = 0;
+    virtual bool acceptCard(std::unique_ptr<Card>) = 0;
+	virtual ~CardStorage() = 0;
+};
+
+
+class HomeDestination : CardStorage {
+public:
+	bool canAccept(const Card & card) override;
+    bool acceptCard(std::unique_ptr<Card>) override;
     Card const * top() const;
     friend std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) ;
 
@@ -20,10 +28,10 @@ private:
 };
 
 
-class FreeCell {
+class FreeCell : CardStorage {
 public:
-	bool canAccept(const Card & card);
-    bool acceptCard(std::unique_ptr<Card>);
+	bool canAccept(const Card & card) override;
+    bool acceptCard(std::unique_ptr<Card>) override;
     Card const * card() const;
 
 private:
