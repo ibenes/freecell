@@ -5,7 +5,11 @@
 
 
 void move(CardStorage *from, CardStorage *to) {
-    to->acceptCard(from->getCard());
+    auto card = from->getCard();
+    if (card == nullptr) {
+        return;
+    }
+    to->acceptCard(std::move(card));
 }
 
 
@@ -47,4 +51,8 @@ int main() {
     std::cout << "fc:" << free_cell << "\n";
     std::cout << "hd:" << home_heart << "\n";
 
+    std::cout << "Attempting illegal move\n";
+    move(&free_cell, &home_heart);
+    std::cout << "fc:" << free_cell << "\n";
+    std::cout << "hd:" << home_heart << "\n";
 }
