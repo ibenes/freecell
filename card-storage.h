@@ -1,5 +1,5 @@
-#ifndef HOME_DESTINATION_H
-#define HOME_DESTINATION_H
+#ifndef CARD_STORAGE_H
+#define CARD_STORAGE_H
 
 #include "card.h"
 
@@ -17,5 +17,17 @@ public:
 private:
     std::vector<std::unique_ptr<Card>> storage_;
 };
+
+
+class FreeCell {
+public:
+    bool acceptCard(std::unique_ptr<Card>);
+    Card const * card() const;
+
+private:
+    std::unique_ptr<Card> cell_;
+};
+
+std::ostream& operator<< (std::ostream& os, const FreeCell & fc) ;
 
 #endif

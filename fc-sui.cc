@@ -1,5 +1,5 @@
 #include "card.h"
-#include "home-destination.h"
+#include "card-storage.h"
 
 #include <iostream>
 
@@ -27,4 +27,13 @@ int main() {
 
     home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3));
     std::cout << home_heart << "\n";
+
+    FreeCell free_cell;
+    std::cout << "fc:" << free_cell << "\n";
+
+    free_cell.acceptCard(std::make_unique<Card>(Color::Heart, 4));
+    std::cout << "fc:" << free_cell << "\n";
+
+    free_cell.acceptCard(std::make_unique<Card>(Color::Spade, 4));
+    std::cout << "fc:" << free_cell << "\n";
 }

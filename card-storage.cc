@@ -1,4 +1,4 @@
-#include "home-destination.h"
+#include "card-storage.h"
 
 bool HomeDestination::acceptCard(std::unique_ptr<Card> card) {
     if (storage_.size() == 0) {
@@ -28,6 +28,32 @@ std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) {
         os << "_"; 
     } else {
         os << *hd.top();
+    }
+
+    return os;
+}
+
+
+bool FreeCell::acceptCard(std::unique_ptr<Card> card) {
+    if (cell_ == nullptr) {
+        cell_ = std::move(card);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+Card const * FreeCell::card() const {
+    return cell_.get();
+}
+
+std::ostream& operator<< (std::ostream& os, const FreeCell & fc) {
+    auto card = fc.card();
+    if (card == nullptr) {
+        os << "_"; 
+    } else {
+        os << *card;
     }
 
     return os;
