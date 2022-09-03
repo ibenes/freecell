@@ -7,6 +7,12 @@ fc-sui: fc-sui.o card.o card-storage.o
 	g++ -c $< -o $@
 
 clean:
-	rm fc-sui *.o
+	rm fc-sui test-bin *.o
+
+test-bin: test.cc card.o card-storage.o
+	g++ $^ -o $@
+
+test: test-bin
+	./test-bin
 
 .PHONY: clean all
