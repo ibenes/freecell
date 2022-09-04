@@ -1,6 +1,6 @@
 all: fc-sui
 
-fc-sui: fc-sui.o card.o card-storage.o
+fc-sui: fc-sui.o card.o card-storage.o move.o
 	g++ $^ -o $@
 
 %.o: %.cc 

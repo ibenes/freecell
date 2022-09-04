@@ -1,23 +1,8 @@
 #include "card.h"
 #include "card-storage.h"
+#include "move.h"
 
 #include <iostream>
-
-
-bool legalMove(CardStorage *from, CardStorage *to) {
-    auto card_ref = from->topCard();
-    if (card_ref == nullptr)
-        return false;
-
-    return to->canAccept(*card_ref);
-}
-
-void move(CardStorage *from, CardStorage *to) {
-    if (!legalMove(from, to))
-        return;
-
-    to->acceptCard(std::move(from->getCard()));
-}
 
 
 int main() {
@@ -27,13 +12,7 @@ int main() {
     home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3));
 
     FreeCell free_cell;
-    std::cout << "fc:" << free_cell << "\n";
-
     free_cell.acceptCard(std::make_unique<Card>(Color::Heart, 4));
-    std::cout << "fc:" << free_cell << "\n";
-
-    free_cell.acceptCard(std::make_unique<Card>(Color::Spade, 4));
-    std::cout << "fc:" << free_cell << "\n";
 
     std::cout << "Moving from fc to hd!\n";
     move(&free_cell, &home_heart);
