@@ -4,9 +4,12 @@
 #include "card.h"
 #include <sstream>
 
-TEST_CASE( "Basic tests", "[basic]" ) {
-	Card d{Color::Heart, 12};
+std::string cardRepresentation(const Card &card) {
 	std::stringstream ss;
-	ss << d;
-	REQUIRE(ss.str() == "Qh");
+	ss << card;
+	return ss.str();
+}
+
+TEST_CASE( "Card construction and printing tests", "[basic]" ) {
+	REQUIRE(cardRepresentation({Color::Heart, 12}) == "Qh");
 }
