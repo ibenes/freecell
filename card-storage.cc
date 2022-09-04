@@ -53,7 +53,7 @@ std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) {
 }
 
 
-bool FreeCell::canAccept(const Card & card) {
+bool FreeCell::canAccept([[maybe_unused]] const Card & card) {
     if (cell_ == nullptr) {
         return true;
     } else {

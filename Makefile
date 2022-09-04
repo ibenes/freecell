@@ -1,16 +1,18 @@
+CXXFLAGS=-std=c++17 -Wall -Wextra
+
 all: fc-sui
 
 fc-sui: fc-sui.o card.o card-storage.o move.o
-	g++ $^ -o $@
+	$(CXX) $^ -o $@
 
 %.o: %.cc 
-	g++ -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	rm fc-sui test-bin *.o
 
 test-bin: test.o card.o card-storage.o move.o
-	g++ $^ -o $@
+	$(CXX) $^ -o $@
 
 test: test-bin
 	./test-bin
