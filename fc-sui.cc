@@ -21,12 +21,6 @@ void move(CardStorage *from, CardStorage *to) {
 
 
 int main() {
-	std::cout << "Hello world!\n";
-	Card c{Color::Heart, 2};
-	Card d{Color::Heart, 12};
-	std::cout << "Hello " << c << "!\n";
-	std::cout << "Hello " << d << "!\n";
-
     HomeDestination home_heart;
     home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3));
     std::cout << home_heart << "\n";
