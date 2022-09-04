@@ -1,14 +1,14 @@
 #include "card-storage.h"
 
 bool HomeDestination::canAccept(const Card & card) {
-    if (storage_.size() == 0) {
+    if (topCard() == nullptr) {
         if (card.value == 1) {
             return true;
         } else {
             return false;
         }
     } else {
-        if (card.color == top()->color && card.value == top()->value + 1) {
+        if (card.color == topCard()->color && card.value == topCard()->value + 1) {
             return true;
         } else {
             return false;
@@ -24,6 +24,13 @@ bool HomeDestination::acceptCard(std::unique_ptr<Card> card) {
 	return move_ok;
 }
 
+const Card * HomeDestination::topCard() const {
+	if (storage_.size() == 0)
+		return nullptr;
+	else
+		return storage_.back().get();
+}
+
 
 std::unique_ptr<Card> HomeDestination::getCard() {
 	if (storage_.size() == 0) {
@@ -35,17 +42,12 @@ std::unique_ptr<Card> HomeDestination::getCard() {
 	}
 }
 
-
-Card const * HomeDestination::top() const {
-    return storage_.rbegin()->get();
-}
-
 std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) {
-    if (hd.storage_.size() == 0) {
+	auto card = hd.topCard();
+    if (card == nullptr)
         os << "_"; 
-    } else {
-        os << *hd.top();
-    }
+    else
+        os << *card;
 
     return os;
 }
@@ -65,6 +67,10 @@ bool FreeCell::acceptCard(std::unique_ptr<Card> card) {
         cell_ = std::move(card);
 
     return move_ok;
+}
+
+const Card * FreeCell::topCard() const {
+	return cell_.get();
 }
 
 std::unique_ptr<Card> FreeCell::getCard() {

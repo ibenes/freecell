@@ -12,6 +12,7 @@ class CardStorage {
 public:
 	virtual bool canAccept(const Card & card) = 0;
     virtual bool acceptCard(std::unique_ptr<Card>) = 0;
+    virtual const Card * topCard() const = 0;
     virtual std::unique_ptr<Card> getCard() = 0;
 	virtual ~CardStorage() {};
 };
@@ -21,9 +22,9 @@ class HomeDestination : public CardStorage {
 public:
 	bool canAccept(const Card & card) override;
     bool acceptCard(std::unique_ptr<Card>) override;
+    const Card * topCard() const override;
     std::unique_ptr<Card> getCard() override;
 
-    Card const * top() const;
     friend std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) ;
 
 private:
@@ -35,6 +36,7 @@ class FreeCell : public CardStorage {
 public:
 	bool canAccept(const Card & card) override;
     bool acceptCard(std::unique_ptr<Card>) override;
+    const Card * topCard() const override;
     std::unique_ptr<Card> getCard() override;
 
     Card const * card() const;

@@ -4,12 +4,19 @@
 #include <iostream>
 
 
+bool legalMove(CardStorage *from, CardStorage *to) {
+    auto card_ref = from->topCard();
+    if (card_ref == nullptr)
+        return false;
+
+    return to->canAccept(*card_ref);
+}
+
 void move(CardStorage *from, CardStorage *to) {
-    auto card = from->getCard();
-    if (card == nullptr) {
+    if (!legalMove(from, to))
         return;
-    }
-    to->acceptCard(std::move(card));
+
+    to->acceptCard(std::move(from->getCard()));
 }
 
 
