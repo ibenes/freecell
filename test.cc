@@ -25,7 +25,7 @@ std::string homeRepresentation(const HomeDestination &home) {
 	return ss.str();
 }
 
-TEST_CASE( "Card construction and printing tests", "[card]" ) {
+TEST_CASE("Card construction and printing tests") {
 	REQUIRE(cardRepresentation({Color::Heart, 1}) == "1h");
 	REQUIRE(cardRepresentation({Color::Heart, 2}) == "2h");
 	REQUIRE(cardRepresentation({Color::Heart, 3}) == "3h");
@@ -45,7 +45,7 @@ TEST_CASE( "Card construction and printing tests", "[card]" ) {
 	REQUIRE(cardRepresentation({Color::Spade, 7}) == "7s");
 }
 
-TEST_CASE( "FreeCell operations", "[freecell]" ) {
+TEST_CASE("FreeCell operations") {
     FreeCell free_cell;
 	REQUIRE(freeCellRepresentation(free_cell) == "_");
 
@@ -63,7 +63,7 @@ TEST_CASE( "FreeCell operations", "[freecell]" ) {
 	REQUIRE(freeCellRepresentation(free_cell) == "_");
 }
 
-TEST_CASE( "Home destiation operations", "[home]" ) {
+TEST_CASE("Home destiation operations") {
     HomeDestination home_heart;
 
 	REQUIRE(homeRepresentation(home_heart) == "_");
@@ -87,7 +87,7 @@ TEST_CASE( "Home destiation operations", "[home]" ) {
 	REQUIRE(homeRepresentation(home_heart) == "3h");
 }
 
-TEST_CASE("Moves to home destination", "[move home]") {
+TEST_CASE("Moves to home destination") {
     HomeDestination home_heart;
     FreeCell free_cell;
 
