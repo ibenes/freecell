@@ -22,21 +22,9 @@ void move(CardStorage *from, CardStorage *to) {
 
 int main() {
     HomeDestination home_heart;
-    home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3));
-    std::cout << home_heart << "\n";
-
     home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 1));
-    std::cout << home_heart << "\n";
     home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 2));
-    std::cout << home_heart << "\n";
-
-    home_heart.acceptCard(std::make_unique<Card>(Color::Spade, 3));
-    std::cout << home_heart << "\n";
-    home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 4));
-    std::cout << home_heart << "\n";
-
     home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3));
-    std::cout << home_heart << "\n";
 
     FreeCell free_cell;
     std::cout << "fc:" << free_cell << "\n";

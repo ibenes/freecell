@@ -18,6 +18,12 @@ std::string freeCellRepresentation(const FreeCell &fc) {
 	return ss.str();
 }
 
+std::string homeRepresentation(const HomeDestination &home) {
+	std::stringstream ss;
+	ss << home;
+	return ss.str();
+}
+
 TEST_CASE( "Card construction and printing tests", "[card]" ) {
 	REQUIRE(cardRepresentation({Color::Heart, 1}) == "1h");
 	REQUIRE(cardRepresentation({Color::Heart, 2}) == "2h");
@@ -54,4 +60,28 @@ TEST_CASE( "FreeCell operations", "[freecell]" ) {
 	REQUIRE(cardRepresentation(*free_cell.getCard()) == "1h");
 
 	REQUIRE(freeCellRepresentation(free_cell) == "_");
+}
+
+TEST_CASE( "Home destiation operations", "[home]" ) {
+    HomeDestination home_heart;
+
+	REQUIRE(homeRepresentation(home_heart) == "_");
+
+	REQUIRE_FALSE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3)));
+	REQUIRE(homeRepresentation(home_heart) == "_");
+
+	REQUIRE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 1)));
+	REQUIRE(homeRepresentation(home_heart) == "1h");
+
+	REQUIRE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 2)));
+	REQUIRE(homeRepresentation(home_heart) == "2h");
+
+	REQUIRE_FALSE(home_heart.acceptCard(std::make_unique<Card>(Color::Spade, 3)));
+	REQUIRE(homeRepresentation(home_heart) == "2h");
+
+	REQUIRE_FALSE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 4)));
+	REQUIRE(homeRepresentation(home_heart) == "2h");
+
+	REQUIRE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3)));
+	REQUIRE(homeRepresentation(home_heart) == "3h");
 }
