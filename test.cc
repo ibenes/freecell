@@ -3,6 +3,7 @@
 
 #include "card.h"
 #include "card-storage.h"
+#include "move.h"
 
 #include <sstream>
 
@@ -84,4 +85,25 @@ TEST_CASE( "Home destiation operations", "[home]" ) {
 
 	REQUIRE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3)));
 	REQUIRE(homeRepresentation(home_heart) == "3h");
+}
+
+TEST_CASE("Moves to home destination", "[move home]") {
+    HomeDestination home_heart;
+    FreeCell free_cell;
+
+	REQUIRE_FALSE(moveLegal(&free_cell, &home_heart));
+	move(&free_cell, &home_heart);
+	REQUIRE(homeRepresentation(home_heart) == "_");
+
+    free_cell.acceptCard(std::make_unique<Card>(Color::Heart, 4));
+
+	REQUIRE_FALSE(moveLegal(&free_cell, &home_heart));
+	move(&free_cell, &home_heart);
+	REQUIRE(homeRepresentation(home_heart) == "_");
+
+    free_cell.getCard();
+    free_cell.acceptCard(std::make_unique<Card>(Color::Heart, 1));
+	REQUIRE(moveLegal(&free_cell, &home_heart));
+	move(&free_cell, &home_heart);
+	REQUIRE(homeRepresentation(home_heart) == "1h");
 }

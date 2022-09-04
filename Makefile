@@ -9,7 +9,7 @@ fc-sui: fc-sui.o card.o card-storage.o move.o
 clean:
 	rm fc-sui test-bin *.o
 
-test-bin: test.cc card.o card-storage.o
+test-bin: test.cc card.o card-storage.o move.o
 	g++ $^ -o $@
 
 test: test-bin

@@ -18,9 +18,4 @@ int main() {
     move(&free_cell, &home_heart);
     std::cout << "fc:" << free_cell << "\n";
     std::cout << "hd:" << home_heart << "\n";
-
-    std::cout << "Attempting illegal move\n";
-    move(&free_cell, &home_heart);
-    std::cout << "fc:" << free_cell << "\n";
-    std::cout << "hd:" << home_heart << "\n";
 }
