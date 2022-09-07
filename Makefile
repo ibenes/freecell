@@ -9,9 +9,9 @@ fc-sui: fc-sui.o card.o card-storage.o move.o
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm fc-sui test-bin *.o
+	rm -f fc-sui test-bin *.o
 
-test-bin: test.o card.o card-storage.o move.o
+test-bin: test-main.o test.o card.o card-storage.o move.o
 	$(CXX) $^ -o $@
 
 test: test-bin
