@@ -1,7 +1,7 @@
 #include "card-storage.h"
 
 bool HomeDestination::canAccept(const Card & card) {
-    if (topCard() == nullptr) {
+    if (storage_.size() == 0) {
         if (card.value == 1) {
             return true;
         } else {
@@ -16,84 +16,70 @@ bool HomeDestination::canAccept(const Card & card) {
     }
 }
 
-bool HomeDestination::acceptCard(std::unique_ptr<Card> card) {
-	auto move_ok = canAccept(*card);
+bool HomeDestination::acceptCard(const Card & card) {
+	auto move_ok = canAccept(card);
 	if (move_ok) 
-		storage_.push_back(std::move(card));
+		storage_.push_back(card);
 
 	return move_ok;
 }
 
-const Card * HomeDestination::topCard() const {
-	if (storage_.size() == 0)
-		return nullptr;
+const std::optional<Card> HomeDestination::topCard() const {
+	if (storage_.size() > 0)
+		return storage_.back();
 	else
-		return storage_.back().get();
+		return std::nullopt;
 }
 
 
-std::unique_ptr<Card> HomeDestination::getCard() {
-	if (storage_.size() == 0) {
-		return nullptr;
-	} else {
-		std::unique_ptr<Card> card = std::move(storage_.back());
-		storage_.pop_back();
-		return card;
-	}
+std::optional<Card> HomeDestination::getCard() {
+	auto card = storage_.back();
+	storage_.pop_back();
+	return card;
 }
 
 std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) {
-	auto card = hd.topCard();
-    if (card == nullptr)
+	if (hd.storage_.size() == 0)
         os << "_"; 
     else
-        os << *card;
+        os << *hd.topCard();
 
     return os;
 }
 
 
 bool FreeCell::canAccept([[maybe_unused]] const Card & card) {
-    if (cell_ == nullptr) {
-        return true;
-    } else {
+    if (cell_.has_value()) {
         return false;
+    } else {
+        return true;
     }
 }
 
-bool FreeCell::acceptCard(std::unique_ptr<Card> card) {
-	auto move_ok = canAccept(*card);
+bool FreeCell::acceptCard(const Card & card) {
+	auto move_ok = canAccept(card);
     if (move_ok)
-        cell_ = std::move(card);
+        cell_.emplace(card);
 
     return move_ok;
 }
 
-const Card * FreeCell::topCard() const {
-	return cell_.get();
+const std::optional<Card> FreeCell::topCard() const {
+	return cell_;
 }
 
-std::unique_ptr<Card> FreeCell::getCard() {
-	if (cell_ == nullptr) {
-		return nullptr;
-	} else {
-		std::unique_ptr<Card> card = std::move(cell_);
-		cell_ = nullptr;
-		return card;
-	}
-}
-
-
-Card const * FreeCell::card() const {
-    return cell_.get();
+std::optional<Card> FreeCell::getCard() {
+	auto card = std::move(cell_);
+	cell_.reset();
+	return card;
 }
 
 std::ostream& operator<< (std::ostream& os, const FreeCell & fc) {
-    auto card = fc.card();
-    if (card == nullptr) {
-        os << "_"; 
-    } else {
+    auto card = fc.topCard();
+    if (card.has_value()) {
         os << *card;
+    } else {
+        os << "_"; 
     }
 
     return os;

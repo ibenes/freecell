@@ -48,12 +48,12 @@ TEST_CASE("FreeCell operations") {
     FreeCell free_cell;
 	REQUIRE(freeCellRepresentation(free_cell) == "_");
 
-	REQUIRE(free_cell.topCard() == nullptr);
-	REQUIRE(free_cell.getCard() == nullptr);
+	REQUIRE_FALSE(free_cell.topCard().has_value());
+	REQUIRE_FALSE(free_cell.getCard().has_value());
 
-	auto c = std::make_unique<Card>(Color::Heart, 1);
-	REQUIRE(free_cell.canAccept(*c));
-	REQUIRE(free_cell.acceptCard(std::move(c)));
+	Card c{Color::Heart, 1};
+	REQUIRE(free_cell.canAccept(c));
+	REQUIRE(free_cell.acceptCard(c));
 
 	REQUIRE(freeCellRepresentation(free_cell) == "1h");
 	REQUIRE(cardRepresentation(*free_cell.topCard()) == "1h");
@@ -67,22 +67,22 @@ TEST_CASE("Home destiation operations") {
 
 	REQUIRE(homeRepresentation(home_heart) == "_");
 
-	REQUIRE_FALSE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3)));
+	REQUIRE_FALSE(home_heart.acceptCard({Color::Heart, 3}));
 	REQUIRE(homeRepresentation(home_heart) == "_");
 
-	REQUIRE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 1)));
+	REQUIRE(home_heart.acceptCard({Color::Heart, 1}));
 	REQUIRE(homeRepresentation(home_heart) == "1h");
 
-	REQUIRE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 2)));
+	REQUIRE(home_heart.acceptCard({Color::Heart, 2}));
 	REQUIRE(homeRepresentation(home_heart) == "2h");
 
-	REQUIRE_FALSE(home_heart.acceptCard(std::make_unique<Card>(Color::Spade, 3)));
+	REQUIRE_FALSE(home_heart.acceptCard({Color::Spade, 3}));
 	REQUIRE(homeRepresentation(home_heart) == "2h");
 
-	REQUIRE_FALSE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 4)));
+	REQUIRE_FALSE(home_heart.acceptCard({Color::Heart, 4}));
 	REQUIRE(homeRepresentation(home_heart) == "2h");
 
-	REQUIRE(home_heart.acceptCard(std::make_unique<Card>(Color::Heart, 3)));
+	REQUIRE(home_heart.acceptCard({Color::Heart, 3}));
 	REQUIRE(homeRepresentation(home_heart) == "3h");
 }
 
@@ -94,14 +94,14 @@ TEST_CASE("Moves to home destination") {
 	move(&free_cell, &home_heart);
 	REQUIRE(homeRepresentation(home_heart) == "_");
 
-    free_cell.acceptCard(std::make_unique<Card>(Color::Heart, 4));
+    free_cell.acceptCard({Color::Heart, 4});
 
 	REQUIRE_FALSE(moveLegal(&free_cell, &home_heart));
 	move(&free_cell, &home_heart);
 	REQUIRE(homeRepresentation(home_heart) == "_");
 
     free_cell.getCard();
-    free_cell.acceptCard(std::make_unique<Card>(Color::Heart, 1));
+    free_cell.acceptCard({Color::Heart, 1});
 	REQUIRE(moveLegal(&free_cell, &home_heart));
 	move(&free_cell, &home_heart);
 	REQUIRE(homeRepresentation(home_heart) == "1h");
