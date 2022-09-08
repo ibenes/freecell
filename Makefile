@@ -2,7 +2,7 @@ CXXFLAGS=-std=c++17 -Wall -Wextra
 
 all: fc-sui
 
-fc-sui: fc-sui.o card.o card-storage.o move.o
+fc-sui: fc-sui.o card.o card-storage.o move.o game.o
 	$(CXX) $^ -o $@
 
 %.o: %.cc 
