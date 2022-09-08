@@ -84,3 +84,55 @@ std::ostream& operator<< (std::ostream& os, const FreeCell & fc) {
 
     return os;
 }
+
+
+bool WorkStack::canAccept(const Card & card) {
+    if (storage_.size() == 0) {
+        return true;
+    } else {
+        if (render_color_map[card.color] != render_color_map[topCard()->color] && card.value == topCard()->value - 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+bool WorkStack::acceptCard(const Card & card) {
+	auto move_ok = canAccept(card);
+	if (move_ok) 
+		storage_.push_back(card);
+
+	return move_ok;
+}
+
+const std::optional<Card> WorkStack::topCard() const {
+	if (storage_.size() > 0)
+		return storage_.back();
+	else
+		return std::nullopt;
+}
+
+
+std::optional<Card> WorkStack::getCard() {
+	if (storage_.size() > 0) {
+        auto card = storage_.back();
+        storage_.pop_back();
+		return card;
+	} else {
+		return std::nullopt;
+    }
+}
+
+std::ostream& operator<< (std::ostream& os, const WorkStack & stack) {
+	if (stack.storage_.size() == 0) {
+        os << "_"; 
+    } else {
+        os << stack.storage_[0];
+        for (auto card_it = stack.storage_.begin() + 1; card_it != stack.storage_.end(); ++card_it) {
+            os << " " << *card_it;
+        }
+    }
+
+    return os;
+}

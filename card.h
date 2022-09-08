@@ -7,8 +7,11 @@
 #include <iostream>
 
 enum class Color {Heart, Diamond, Club, Spade};
+enum class RenderColor {Red, Black};
 
 extern std::map<Color, std::string> color_map;
+
+extern std::map<Color, RenderColor> render_color_map;
 
 struct Card {
 	const Color color;

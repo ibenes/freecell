@@ -7,6 +7,13 @@ std::map<Color, std::string> color_map{
 	{Color::Spade, "s"},
 };
 
+std::map<Color, RenderColor> render_color_map{
+	{Color::Heart, RenderColor::Red},
+	{Color::Diamond, RenderColor::Red},
+	{Color::Club, RenderColor::Black},
+	{Color::Spade, RenderColor::Black},
+};
+
 
 std::ostream& operator<< (std::ostream& os, const Card & card) {
 	if (card.value <= 10) {

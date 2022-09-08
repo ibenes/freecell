@@ -24,6 +24,12 @@ std::string homeRepresentation(const HomeDestination &home) {
 	return ss.str();
 }
 
+std::string workStackRepresentation(const WorkStack &stack) {
+	std::stringstream ss;
+	ss << stack;
+	return ss.str();
+}
+
 TEST_CASE("Card construction and printing tests") {
 	REQUIRE(cardRepresentation({Color::Heart, 1}) == "1h");
 	REQUIRE(cardRepresentation({Color::Heart, 2}) == "2h");
@@ -42,6 +48,10 @@ TEST_CASE("Card construction and printing tests") {
 	REQUIRE(cardRepresentation({Color::Diamond, 7}) == "7d");
 	REQUIRE(cardRepresentation({Color::Club, 7}) == "7c");
 	REQUIRE(cardRepresentation({Color::Spade, 7}) == "7s");
+
+	REQUIRE(render_color_map[Card{Color::Spade, 7}.color] == render_color_map[Card{Color::Club, 7}.color]);
+	REQUIRE(render_color_map[Card{Color::Spade, 7}.color] != render_color_map[Card{Color::Heart, 7}.color]);
+	REQUIRE(render_color_map[Card{Color::Diamond, 7}.color] == render_color_map[Card{Color::Heart, 7}.color]);
 }
 
 TEST_CASE("FreeCell operations") {
@@ -86,6 +96,34 @@ TEST_CASE("Home destiation operations") {
 	REQUIRE(homeRepresentation(home_heart) == "3h");
 }
 
+TEST_CASE("Work stack operations") {
+    WorkStack stack;
+
+	REQUIRE(workStackRepresentation(stack) == "_");
+	REQUIRE_FALSE(stack.topCard().has_value());
+	REQUIRE_FALSE(stack.getCard().has_value());
+	REQUIRE(workStackRepresentation(stack) == "_");
+
+	REQUIRE(stack.acceptCard({Color::Heart, 3}));
+	REQUIRE(workStackRepresentation(stack) == "3h");
+	REQUIRE(cardRepresentation(*stack.topCard()) == "3h");
+
+	REQUIRE_FALSE(stack.acceptCard({Color::Heart, 3}));
+	REQUIRE_FALSE(stack.acceptCard({Color::Heart, 2}));
+	REQUIRE_FALSE(stack.acceptCard({Color::Spade, 3}));
+	REQUIRE_FALSE(stack.acceptCard({Color::Spade, 4}));
+
+	REQUIRE(stack.acceptCard({Color::Spade, 2}));
+	REQUIRE(workStackRepresentation(stack) == "3h 2s");
+
+	REQUIRE_FALSE(stack.acceptCard({Color::Heart, 3}));
+	REQUIRE_FALSE(stack.acceptCard({Color::Heart, 2}));
+	REQUIRE_FALSE(stack.acceptCard({Color::Club, 1}));
+
+	REQUIRE(stack.acceptCard({Color::Diamond, 1}));
+	REQUIRE(workStackRepresentation(stack) == "3h 2s 1d");
+}
+
 TEST_CASE("Moves to home destination") {
     HomeDestination home_heart;
     FreeCell free_cell;
@@ -105,4 +143,83 @@ TEST_CASE("Moves to home destination") {
 	REQUIRE(moveLegal(&free_cell, &home_heart));
 	move(&free_cell, &home_heart);
 	REQUIRE(homeRepresentation(home_heart) == "1h");
+}
+
+TEST_CASE("Moves from work stack") {
+    WorkStack stack;
+    HomeDestination home_heart;
+    FreeCell free_cell;
+
+	REQUIRE_FALSE(moveLegal(&stack, &home_heart));
+	move(&stack, &home_heart);
+	REQUIRE(homeRepresentation(home_heart) == "_");
+
+	REQUIRE_FALSE(moveLegal(&stack, &free_cell));
+	move(&stack, &free_cell);
+	REQUIRE(freeCellRepresentation(free_cell) == "_");
+
+    stack.acceptCard({Color::Spade, 5});
+	REQUIRE(moveLegal(&stack, &free_cell));
+	move(&stack, &free_cell);
+	REQUIRE(freeCellRepresentation(free_cell) == "5s");
+	REQUIRE(workStackRepresentation(stack) == "_");
+
+    stack.acceptCard({Color::Heart, 5});
+    stack.acceptCard({Color::Spade, 4});
+    stack.acceptCard({Color::Heart, 3});
+    stack.acceptCard({Color::Club, 2});
+    stack.acceptCard({Color::Heart, 1});
+	REQUIRE(workStackRepresentation(stack) == "5h 4s 3h 2c 1h");
+
+	REQUIRE(moveLegal(&stack, &home_heart));
+	move(&stack, &home_heart);
+	REQUIRE(workStackRepresentation(stack) == "5h 4s 3h 2c");
+	REQUIRE(homeRepresentation(home_heart) == "1h");
+
+	REQUIRE_FALSE(moveLegal(&stack, &home_heart));
+	move(&stack, &home_heart);
+	REQUIRE(workStackRepresentation(stack) == "5h 4s 3h 2c");
+	REQUIRE(homeRepresentation(home_heart) == "1h");
+
+    free_cell.getCard();
+	REQUIRE(moveLegal(&stack, &free_cell));
+	move(&stack, &free_cell);
+	REQUIRE(workStackRepresentation(stack) == "5h 4s 3h");
+	REQUIRE(freeCellRepresentation(free_cell) == "2c");
+
+    home_heart.acceptCard({Color::Heart, 2});
+	REQUIRE(moveLegal(&stack, &home_heart));
+	move(&stack, &home_heart);
+	REQUIRE(workStackRepresentation(stack) == "5h 4s");
+	REQUIRE(homeRepresentation(home_heart) == "3h");
+}
+
+TEST_CASE("Moves to work stack") {
+    WorkStack stack;
+    FreeCell fc_1, fc_2;
+
+	REQUIRE_FALSE(moveLegal(&fc_1, &stack));
+	move(&fc_1, &stack);
+	REQUIRE(workStackRepresentation(stack) == "_");
+	REQUIRE(freeCellRepresentation(fc_1) == "_");
+
+    fc_1.acceptCard({Color::Club, 10});
+    fc_2.acceptCard({Color::Diamond, 9});
+	REQUIRE(moveLegal(&fc_1, &stack));
+	move(&fc_1, &stack);
+	REQUIRE(moveLegal(&fc_2, &stack));
+	move(&fc_2, &stack);
+	REQUIRE(workStackRepresentation(stack) == "10c 9d");
+	REQUIRE(freeCellRepresentation(fc_1) == "_");
+	REQUIRE(freeCellRepresentation(fc_2) == "_");
+
+    fc_1.acceptCard({Color::Club, 9});
+    fc_2.acceptCard({Color::Diamond, 8});
+	REQUIRE_FALSE(moveLegal(&fc_1, &stack));
+	move(&fc_1, &stack);
+	REQUIRE_FALSE(moveLegal(&fc_2, &stack));
+	move(&fc_2, &stack);
+	REQUIRE(workStackRepresentation(stack) == "10c 9d");
+	REQUIRE(freeCellRepresentation(fc_1) == "9c");
+	REQUIRE(freeCellRepresentation(fc_2) == "8d");
 }

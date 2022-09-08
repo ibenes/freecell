@@ -32,6 +32,20 @@ private:
 };
 
 
+class WorkStack : public CardStorage {
+public:
+	bool canAccept(const Card & card) override;
+    bool acceptCard(const Card & card) override;
+    const std::optional<Card> topCard() const override;
+    std::optional<Card> getCard() override;
+
+    friend std::ostream& operator<< (std::ostream& os, const WorkStack & stack) ;
+
+private:
+    std::vector<Card> storage_;
+};
+
+
 class FreeCell : public CardStorage {
 public:
 	bool canAccept(const Card & card) override;
