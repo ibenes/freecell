@@ -17,6 +17,13 @@ void move(CardStorage *from, CardStorage *to) {
 
 std::vector<RawMove> availableMoves(Locations froms, Locations tos) {
 	std::vector<RawMove> moves;
-	moves.push_back({froms[0], tos[0]});
+
+	for (auto from : froms) {
+		for (auto to : tos) {
+			if (moveLegal(from, to))
+				moves.push_back({from, to});
+		}
+	}
+
 	return moves;
 }

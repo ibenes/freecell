@@ -226,10 +226,28 @@ TEST_CASE("Moves to work stack") {
 
 TEST_CASE("Move discovery") {
     WorkStack stack;
-    FreeCell fc;
+    FreeCell fc_1, fc_2;
 
     stack.acceptCard({Color::Heart, 7});
-    auto moves = availableMoves({&stack}, {&fc});
-    std::vector<RawMove> expected{{&stack, &fc}};
-    REQUIRE(moves == expected);
+    REQUIRE(availableMoves({&stack}, {&fc_1}) == std::vector<RawMove>{{&stack, &fc_1}});
+    REQUIRE(availableMoves({&stack}, {&fc_2}) == std::vector<RawMove>{{&stack, &fc_2}});
+
+    REQUIRE(availableMoves({&fc_1}, {&fc_2}) == std::vector<RawMove>{});
+    REQUIRE(availableMoves({}, {&fc_1}) == std::vector<RawMove>{});
+    REQUIRE(availableMoves({&stack}, {}) == std::vector<RawMove>{});
+
+    fc_2.acceptCard({Color::Spade, 6});
+    REQUIRE(
+        availableMoves({&stack, &fc_2}, {&fc_1}) ==
+        std::vector<RawMove>{
+            {&stack, &fc_1},
+            {&fc_2, &fc_1},
+        });
+    REQUIRE(
+        availableMoves({&stack, &fc_2}, {&fc_1, &stack}) ==
+        std::vector<RawMove>{
+            {&stack, &fc_1},
+            {&fc_2, &fc_1},
+            {&fc_2, &stack},
+        });
 }
