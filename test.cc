@@ -223,3 +223,13 @@ TEST_CASE("Moves to work stack") {
 	REQUIRE(freeCellRepresentation(fc_1) == "9c");
 	REQUIRE(freeCellRepresentation(fc_2) == "8d");
 }
+
+TEST_CASE("Move discovery") {
+    WorkStack stack;
+    FreeCell fc;
+
+    stack.acceptCard({Color::Heart, 7});
+    auto moves = availableMoves({&stack}, {&fc});
+    std::vector<RawMove> expected{{&stack, &fc}};
+    REQUIRE(moves == expected);
+}

@@ -14,3 +14,9 @@ void move(CardStorage *from, CardStorage *to) {
 
     to->acceptCard(*from->getCard());
 }
+
+std::vector<RawMove> availableMoves(Locations froms, Locations tos) {
+	std::vector<RawMove> moves;
+	moves.push_back({froms[0], tos[0]});
+	return moves;
+}
