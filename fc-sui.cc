@@ -21,5 +21,6 @@ int main() {
     std::cout << "hd:" << home_heart << "\n";
 
     GameState gs{};
+    initializeGameState(&gs);
     std::cout << gs;
 }
