@@ -123,7 +123,7 @@ std::vector<RawMove> safeHomeMoves(GameState &gs) {
             continue;
 
         auto home_it = findHomeFor(gs, *opt_card);
-        if (home_it != gs.homes.end())
+        if (home_it != gs.homes.end() && cardCouldGoHome(gs, *opt_card))
             moves.push_back({cs, home_it});
     }
 

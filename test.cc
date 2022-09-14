@@ -336,7 +336,7 @@ TEST_CASE("Safe moving of aces") {
 
     gs.stacks[0].acceptCard({Color::Spade, 1});
     gs.stacks[1].acceptCard({Color::Spade, 6});
-    gs.stacks[1].acceptCard({Color::Heart, 3});
+    gs.stacks[2].acceptCard({Color::Heart, 3});
 
     gs.free_cells[0].acceptCard({Color::Club, 3});
     gs.free_cells[1].acceptCard({Color::Club, 1});
@@ -347,5 +347,44 @@ TEST_CASE("Safe moving of aces") {
     REQUIRE(safeHomeMoves(gs) == std::vector<RawMove>{
         {&gs.free_cells[1], &gs.homes[2]},
         {&gs.stacks[0], &gs.homes[2]},
+    });
+}
+
+TEST_CASE("Safe moving of twos") {
+    GameState gs;
+
+    gs.stacks[0].acceptCard({Color::Club, 2});
+    gs.stacks[1].acceptCard({Color::Spade, 6});
+    gs.stacks[2].acceptCard({Color::Heart, 2});
+
+    gs.free_cells[0].acceptCard({Color::Spade, 2});
+    gs.free_cells[1].acceptCard({Color::Diamond, 2});
+
+    gs.homes[0].acceptCard({Color::Heart, 1});
+    gs.homes[1].acceptCard({Color::Diamond, 1});
+
+    REQUIRE(safeHomeMoves(gs) == std::vector<RawMove>{
+        {&gs.free_cells[1], &gs.homes[1]},
+        {&gs.stacks[2], &gs.homes[0]},
+    });
+}
+
+TEST_CASE("Safe moving if other-color, lower-valued are home") {
+    GameState gs;
+
+    gs.homes[0].acceptCard({Color::Heart, 1});
+    gs.homes[0].acceptCard({Color::Heart, 2});
+    gs.homes[1].acceptCard({Color::Diamond, 1});
+    gs.homes[1].acceptCard({Color::Diamond, 2});
+    gs.homes[2].acceptCard({Color::Club, 1});
+    gs.homes[2].acceptCard({Color::Club, 2});
+
+    gs.free_cells[0].acceptCard({Color::Club, 3});
+
+    // This one can't go home yet, 2s might need it as a resting place
+    gs.free_cells[1].acceptCard({Color::Diamond, 3});
+
+    REQUIRE(safeHomeMoves(gs) == std::vector<RawMove>{
+        {&gs.free_cells[0], &gs.homes[2]},
     });
 }
