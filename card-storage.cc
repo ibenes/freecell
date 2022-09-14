@@ -2,17 +2,11 @@
 
 bool HomeDestination::canAccept(const Card & card) {
     if (storage_.size() == 0) {
-        if (card.value == 1) {
-            return true;
-        } else {
-            return false;
-        }
+		return card.value == 1;
     } else {
-        if (card.color == topCard()->color && card.value == topCard()->value + 1) {
-            return true;
-        } else {
-            return false;
-        }
+		bool matching_color = card.color == topCard()->color;
+		bool one_higher = card.value == topCard()->value + 1;
+		return matching_color && one_higher;
     }
 }
 
@@ -49,11 +43,7 @@ std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) {
 
 
 bool FreeCell::canAccept([[maybe_unused]] const Card & card) {
-    if (cell_.has_value()) {
-        return false;
-    } else {
-        return true;
-    }
+	return !cell_.has_value();
 }
 
 bool FreeCell::acceptCard(const Card & card) {
@@ -90,11 +80,9 @@ bool WorkStack::canAccept(const Card & card) {
     if (storage_.size() == 0) {
         return true;
     } else {
-        if (render_color_map[card.color] != render_color_map[topCard()->color] && card.value == topCard()->value - 1) {
-            return true;
-        } else {
-            return false;
-        }
+		bool oppposing_render_color = render_color_map.at(card.color) != render_color_map.at(topCard()->color);
+		bool one_less = card.value == topCard()->value - 1;
+		return oppposing_render_color && one_less;
     }
 }
 

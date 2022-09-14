@@ -10,13 +10,16 @@
 enum class Color {Heart, Diamond, Club, Spade};
 enum class RenderColor {Red, Black};
 
-extern std::vector<Color> colors_list;
+extern const std::vector<Color> colors_list;
 
-extern std::map<Color, std::string> color_map;
+extern const std::map<Color, std::string> color_map;
 
-extern std::map<Color, RenderColor> render_color_map;
+extern const std::map<Color, RenderColor> render_color_map;
+
+inline constexpr int king_value = 13;
 
 struct Card {
+	Card(Color col, int val);
 	const Color color;
 	const int value;
 };

@@ -50,9 +50,9 @@ TEST_CASE("Card construction and printing tests") {
 	REQUIRE(cardRepresentation({Color::Club, 7}) == "7c");
 	REQUIRE(cardRepresentation({Color::Spade, 7}) == "7s");
 
-	REQUIRE(render_color_map[Card{Color::Spade, 7}.color] == render_color_map[Card{Color::Club, 7}.color]);
-	REQUIRE(render_color_map[Card{Color::Spade, 7}.color] != render_color_map[Card{Color::Heart, 7}.color]);
-	REQUIRE(render_color_map[Card{Color::Diamond, 7}.color] == render_color_map[Card{Color::Heart, 7}.color]);
+	REQUIRE(render_color_map.at(Card{Color::Spade, 7}.color) == render_color_map.at(Card{Color::Club, 7}.color));
+	REQUIRE(render_color_map.at(Card{Color::Spade, 7}.color) != render_color_map.at(Card{Color::Heart, 7}.color));
+	REQUIRE(render_color_map.at(Card{Color::Diamond, 7}.color) == render_color_map.at(Card{Color::Heart, 7}.color));
 }
 
 TEST_CASE("Card equality tests") {

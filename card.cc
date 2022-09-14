@@ -1,25 +1,31 @@
 #include "card.h"
 
-std::map<Color, std::string> color_map{
+#include <cassert>
+
+const std::map<Color, std::string> color_map{
 	{Color::Heart, "h"},
 	{Color::Diamond, "d"},
 	{Color::Club, "c"},
 	{Color::Spade, "s"},
 };
 
-std::map<Color, RenderColor> render_color_map{
+const std::map<Color, RenderColor> render_color_map{
 	{Color::Heart, RenderColor::Red},
 	{Color::Diamond, RenderColor::Red},
 	{Color::Club, RenderColor::Black},
 	{Color::Spade, RenderColor::Black},
 };
 
-std::vector<Color> colors_list {
+const std::vector<Color> colors_list {
 	Color::Heart,
 	Color::Diamond,
 	Color::Club,
 	Color::Spade,
 };
+
+Card::Card(Color col, int val) : color(col), value(val) {
+	assert(value >= 1 && value <= king_value);
+}
 
 std::ostream& operator<< (std::ostream& os, const Card & card) {
 	if (card.value <= 10) {
@@ -31,7 +37,7 @@ std::ostream& operator<< (std::ostream& os, const Card & card) {
 	} else if (card.value == 13) {
 		os << "K";
 	}
-	os << color_map[card.color];
+	os << color_map.at(card.color);
 	return os;
 }
 

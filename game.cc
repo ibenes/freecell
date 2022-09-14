@@ -2,6 +2,7 @@
 #include "move.h"
 
 #include <algorithm>
+#include <cassert>
 #include <random>
 
 template <typename In>
@@ -14,11 +15,12 @@ std::vector<CardStorage *> collect_location_pointers(In begin, In end) {
 }
 
 GameState::GameState(void) {
-    for (int i=0; i<4; ++i)
+    assert(nb_freecells == nb_homes);
+    for (int i=0; i<nb_freecells; ++i)
         non_homes[i] = &free_cells[i];
 
-    for (int i=0; i<8; ++i)
-        non_homes[i + 4] = &stacks[i];
+    for (int i=0; i<nb_stacks; ++i)
+        non_homes[i + nb_freecells] = &stacks[i];
 }
 
 std::vector<Card> topCards(const GameState &gs) {
@@ -34,17 +36,10 @@ std::vector<Card> topCards(const GameState &gs) {
 }
 
 void initializeGameState(GameState *gs) {
-    for (int i=0; i <= 13; ++i)
-        gs->homes[0].acceptCard({Color::Heart, i});    
-
-    for (int i=0; i <= 13; ++i)
-        gs->homes[1].acceptCard({Color::Diamond, i});    
-
-    for (int i=0; i <= 13; ++i)
-        gs->homes[2].acceptCard({Color::Club, i});    
-
-    for (int i=0; i <= 13; ++i)
-        gs->homes[3].acceptCard({Color::Spade, i});    
+    for (size_t i=0; i<colors_list.size(); ++i) {
+        for (int j=1; j <= king_value; ++j)
+            gs->homes[i].acceptCard({colors_list[i], j});
+    }
 
     std::random_device dev;
     std::default_random_engine rng(dev());
@@ -98,12 +93,12 @@ bool cardCouldGoHome(const GameState &gs, Card card) {
     if (card.value == 1 or card.value == 2)
         return true;
 
-    auto render_color{render_color_map[card.color]}; 
+    auto render_color{render_color_map.at(card.color)}; 
     std::vector<Color> opposite_rc_colors;
     bool safe = true;
 
     for (auto & color : colors_list) {
-        if (render_color_map[color] == render_color)
+        if (render_color_map.at(color) == render_color)
             continue;
 
         if (!cardIsHome(gs, {color, card.value-1}))
