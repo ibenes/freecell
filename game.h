@@ -19,6 +19,7 @@ std::ostream& operator<< (std::ostream& os, const GameState & state) ;
 void initializeGameState(GameState *gs) ;
 std::vector<Card> topCards(const GameState &gs) ;
 bool cardIsHome(const GameState &gs, Card card) ;
+bool cardCouldGoHome(const GameState &gs, Card card) ;
 auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator;
 
 std::vector<RawMove> safeHomeMoves(GameState &gs) ;

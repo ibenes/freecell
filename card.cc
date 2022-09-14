@@ -14,6 +14,12 @@ std::map<Color, RenderColor> render_color_map{
 	{Color::Spade, RenderColor::Black},
 };
 
+std::vector<Color> colors_list {
+	Color::Heart,
+	Color::Diamond,
+	Color::Club,
+	Color::Spade,
+};
 
 std::ostream& operator<< (std::ostream& os, const Card & card) {
 	if (card.value <= 10) {

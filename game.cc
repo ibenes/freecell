@@ -91,6 +91,28 @@ bool cardIsHome(const GameState &gs, Card card) {
     return false;
 }
 
+bool cardCouldGoHome(const GameState &gs, Card card) {
+    // Aces can always go home
+    // Thus, twos can go too, as an Ace will never need to rest
+    // on a two
+    if (card.value == 1 or card.value == 2)
+        return true;
+
+    auto render_color{render_color_map[card.color]}; 
+    std::vector<Color> opposite_rc_colors;
+    bool safe = true;
+
+    for (auto & color : colors_list) {
+        if (render_color_map[color] == render_color)
+            continue;
+
+        if (!cardIsHome(gs, {color, card.value-1}))
+            safe = false;
+    }
+
+    return safe;
+}
+
 std::vector<RawMove> safeHomeMoves(GameState &gs) {
     std::vector<RawMove> moves;
 

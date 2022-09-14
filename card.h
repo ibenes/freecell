@@ -4,10 +4,13 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <iostream>
 
 enum class Color {Heart, Diamond, Club, Spade};
 enum class RenderColor {Red, Black};
+
+extern std::vector<Color> colors_list;
 
 extern std::map<Color, std::string> color_map;
 

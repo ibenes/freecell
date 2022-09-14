@@ -297,6 +297,24 @@ TEST_CASE("Testing if cards are home") {
     REQUIRE_FALSE(cardIsHome(gs, {Color::Spade, 2}));
 }
 
+TEST_CASE("Testing cards are properly detected as \"can go home\" [and thus be blocked]") {
+    GameState gs;
+
+    gs.homes[0].acceptCard({Color::Heart, 1});
+    gs.homes[0].acceptCard({Color::Heart, 2});
+    gs.homes[1].acceptCard({Color::Diamond, 1});
+    gs.homes[1].acceptCard({Color::Diamond, 2});
+
+    gs.homes[1].acceptCard({Color::Spade, 1});
+    gs.homes[1].acceptCard({Color::Spade, 2});
+
+    REQUIRE(cardCouldGoHome(gs, {Color::Heart, 1})); // Aces can go always
+    REQUIRE(cardCouldGoHome(gs, {Color::Heart, 2})); // Twos can go always
+    REQUIRE(cardCouldGoHome(gs, {Color::Club, 3})); // Both red twos are home
+
+    REQUIRE_FALSE(cardCouldGoHome(gs, {Color::Heart, 3})); // Club two is not at home
+}
+
 TEST_CASE("Finding home for card") {
     GameState gs;
 
