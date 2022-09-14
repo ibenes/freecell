@@ -15,4 +15,6 @@ std::ostream& operator<< (std::ostream& os, const GameState & state) ;
 
 void initializeGameState(GameState *gs) ;
 std::vector<Card> topCards(const GameState &gs) ;
+auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator;
+
 int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, std::default_random_engine rng) ;

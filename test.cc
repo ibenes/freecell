@@ -280,3 +280,18 @@ TEST_CASE("Automatic moves") {
         {Color::Club, 6},
     });
 }
+
+TEST_CASE("Finding home for card") {
+    GameState gs;
+
+    gs.homes[0].acceptCard({Color::Heart, 1});
+    gs.homes[0].acceptCard({Color::Heart, 2});
+    gs.homes[2].acceptCard({Color::Club, 1});
+
+    REQUIRE(findHomeFor(gs, {Color::Club, 2}) == gs.homes.begin()+2);
+    REQUIRE(findHomeFor(gs, {Color::Diamond, 2}) == gs.homes.end());
+    REQUIRE(findHomeFor(gs, {Color::Diamond, 1}) == gs.homes.begin()+1);
+    REQUIRE(findHomeFor(gs, {Color::Diamond, 1}) == gs.homes.begin()+1);
+    REQUIRE(findHomeFor(gs, {Color::Spade, 1}) == gs.homes.begin()+1);
+    REQUIRE(findHomeFor(gs, {Color::Heart, 3}) == gs.homes.begin()+0);
+}

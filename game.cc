@@ -68,6 +68,14 @@ int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, 
     return i;
 }
 
+auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator {
+    return std::find_if(
+        gs.homes.begin(),
+        gs.homes.end(),
+        [&](CardStorage &cs){return cs.canAccept(card);}
+    );
+}
+
 std::ostream& operator<< (std::ostream& os, const GameState & state) {
     os << "Homes: " <<
         state.homes[0] << " " <<
