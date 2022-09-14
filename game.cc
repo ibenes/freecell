@@ -13,17 +13,19 @@ std::vector<CardStorage *> collect_location_pointers(In begin, In end) {
     return adresses;
 }
 
+GameState::GameState(void) {
+    for (int i=0; i<4; ++i)
+        non_homes[i] = &free_cells[i];
+
+    for (int i=0; i<8; ++i)
+        non_homes[i + 4] = &stacks[i];
+}
+
 std::vector<Card> topCards(const GameState &gs) {
     std::vector<Card> cards;
 
-    for (auto &cs : gs.free_cells) {
-        auto opt_card = cs.topCard();
-        if (opt_card.has_value())
-            cards.push_back(*opt_card);
-    }
-
-    for (auto &cs : gs.stacks) {
-        auto opt_card = cs.topCard();
+    for (auto &cs : gs.non_homes) {
+        auto opt_card = cs->topCard();
         if (opt_card.has_value())
             cards.push_back(*opt_card);
     }
@@ -92,26 +94,15 @@ bool cardIsHome(const GameState &gs, Card card) {
 std::vector<RawMove> safeHomeMoves(GameState &gs) {
     std::vector<RawMove> moves;
 
-    for (auto &fc : gs.free_cells) {
-        auto opt_card = fc.topCard();
+    for (auto &cs : gs.non_homes) {
+        auto opt_card = cs->topCard();
 
         if (!opt_card.has_value())
             continue;
 
         auto home_it = findHomeFor(gs, *opt_card);
         if (home_it != gs.homes.end())
-            moves.push_back({&fc, home_it});
-    }
-
-    for (auto &stack : gs.stacks) {
-        auto opt_card = stack.topCard();
-
-        if (!opt_card.has_value())
-            continue;
-
-        auto home_it = findHomeFor(gs, *opt_card);
-        if (home_it != gs.homes.end())
-            moves.push_back({&stack, home_it});
+            moves.push_back({cs, home_it});
     }
 
     return moves;

@@ -5,11 +5,13 @@
 
 
 struct GameState {
+    GameState(void);
+
     std::array<HomeDestination, 4> homes;
     std::array<FreeCell, 4> free_cells;
     std::array<WorkStack, 8> stacks;
 
-    std::vector<Card> topCards(void) const;
+    std::array<CardStorage *, 12> non_homes;
 };
 
 std::ostream& operator<< (std::ostream& os, const GameState & state) ;
