@@ -54,6 +54,12 @@ TEST_CASE("Card construction and printing tests") {
 	REQUIRE(render_color_map[Card{Color::Diamond, 7}.color] == render_color_map[Card{Color::Heart, 7}.color]);
 }
 
+TEST_CASE("Card equality tests") {
+	REQUIRE(Card{Color::Heart, 1} == Card{Color::Heart, 1});
+	REQUIRE(Card{Color::Spade, 1} != Card{Color::Heart, 1});
+	REQUIRE(Card{Color::Heart, 2} != Card{Color::Heart, 1});
+}
+
 TEST_CASE("FreeCell operations") {
     FreeCell free_cell;
 	REQUIRE(freeCellRepresentation(free_cell) == "_");

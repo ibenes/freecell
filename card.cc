@@ -29,3 +29,10 @@ std::ostream& operator<< (std::ostream& os, const Card & card) {
 	return os;
 }
 
+bool operator==(const Card &a, const Card &b) {
+	return a.color == b.color && a.value == b.value;
+}
+
+bool operator!=(const Card &a, const Card &b) {
+	return !(a == b);
+}
