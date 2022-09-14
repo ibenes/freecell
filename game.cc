@@ -76,6 +76,19 @@ auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator {
     );
 }
 
+bool cardIsHome(const GameState &gs, Card card) {
+    for (const auto & home : gs.homes) {
+        auto opt_top_card = home.topCard();
+        if (!opt_top_card.has_value())
+            continue;
+
+        if (opt_top_card->color == card.color && opt_top_card->value >= card.value)
+            return true;
+    }
+
+    return false;
+}
+
 std::vector<RawMove> safeHomeMoves(GameState &gs) {
     std::vector<RawMove> moves;
 

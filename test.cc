@@ -281,6 +281,22 @@ TEST_CASE("Top cards discovery") {
     });
 }
 
+TEST_CASE("Testing if cards are home") {
+    GameState gs;
+
+    gs.homes[0].acceptCard({Color::Heart, 1});
+    gs.homes[0].acceptCard({Color::Heart, 2});
+    gs.homes[1].acceptCard({Color::Club, 1});
+
+    REQUIRE(cardIsHome(gs, {Color::Heart, 1}));
+    REQUIRE(cardIsHome(gs, {Color::Heart, 2}));
+    REQUIRE(cardIsHome(gs, {Color::Club, 1}));
+
+    REQUIRE_FALSE(cardIsHome(gs, {Color::Club, 2}));
+    REQUIRE_FALSE(cardIsHome(gs, {Color::Spade, 1}));
+    REQUIRE_FALSE(cardIsHome(gs, {Color::Spade, 2}));
+}
+
 TEST_CASE("Finding home for card") {
     GameState gs;
 
