@@ -16,8 +16,6 @@ extern std::map<Color, RenderColor> render_color_map;
 struct Card {
 	const Color color;
 	const int value;
-
-	Card(Color col, int val) : color(col), value(val) {};
 };
 
 bool operator== (const Card &a, const Card &b) ;
