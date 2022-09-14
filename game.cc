@@ -76,6 +76,34 @@ auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator {
     );
 }
 
+std::vector<RawMove> safeHomeMoves(GameState &gs) {
+    std::vector<RawMove> moves;
+
+    for (auto &fc : gs.free_cells) {
+        auto opt_card = fc.topCard();
+
+        if (!opt_card.has_value())
+            continue;
+
+        auto home_it = findHomeFor(gs, *opt_card);
+        if (home_it != gs.homes.end())
+            moves.push_back({&fc, home_it});
+    }
+
+    for (auto &stack : gs.stacks) {
+        auto opt_card = stack.topCard();
+
+        if (!opt_card.has_value())
+            continue;
+
+        auto home_it = findHomeFor(gs, *opt_card);
+        if (home_it != gs.homes.end())
+            moves.push_back({&stack, home_it});
+    }
+
+    return moves;
+}
+
 std::ostream& operator<< (std::ostream& os, const GameState & state) {
     os << "Homes: " <<
         state.homes[0] << " " <<

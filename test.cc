@@ -259,7 +259,7 @@ TEST_CASE("Move discovery") {
         });
 }
 
-TEST_CASE("Automatic moves") {
+TEST_CASE("Top cards discovery") {
     GameState gs;
 
     gs.stacks[0].acceptCard({Color::Heart, 7});
@@ -294,4 +294,24 @@ TEST_CASE("Finding home for card") {
     REQUIRE(findHomeFor(gs, {Color::Diamond, 1}) == gs.homes.begin()+1);
     REQUIRE(findHomeFor(gs, {Color::Spade, 1}) == gs.homes.begin()+1);
     REQUIRE(findHomeFor(gs, {Color::Heart, 3}) == gs.homes.begin()+0);
+}
+
+
+TEST_CASE("Safe moving of aces") {
+    GameState gs;
+
+    gs.stacks[0].acceptCard({Color::Spade, 1});
+    gs.stacks[1].acceptCard({Color::Spade, 6});
+    gs.stacks[1].acceptCard({Color::Heart, 3});
+
+    gs.free_cells[0].acceptCard({Color::Club, 3});
+    gs.free_cells[1].acceptCard({Color::Club, 1});
+
+    gs.homes[0].acceptCard({Color::Heart, 1});
+    gs.homes[1].acceptCard({Color::Diamond, 1});
+
+    REQUIRE(safeHomeMoves(gs) == std::vector<RawMove>{
+        {&gs.free_cells[1], &gs.homes[2]},
+        {&gs.stacks[0], &gs.homes[2]},
+    });
 }
