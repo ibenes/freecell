@@ -3,6 +3,7 @@
 #include "card.h"
 #include "card-storage.h"
 #include "move.h"
+#include "game.h"
 
 #include <sstream>
 
@@ -256,4 +257,26 @@ TEST_CASE("Move discovery") {
             {&fc_2, &fc_1},
             {&fc_2, &stack},
         });
+}
+
+TEST_CASE("Automatic moves") {
+    GameState gs;
+
+    gs.stacks[0].acceptCard({Color::Heart, 7});
+    gs.stacks[0].acceptCard({Color::Spade, 6});
+    gs.stacks[1].acceptCard({Color::Heart, 6});
+    gs.stacks[2].acceptCard({Color::Club, 6});
+
+    gs.free_cells[3].acceptCard({Color::Diamond, 1});
+
+    gs.homes[0].acceptCard({Color::Heart, 1});
+    gs.homes[0].acceptCard({Color::Heart, 2});
+    gs.homes[2].acceptCard({Color::Club, 1});
+
+    REQUIRE(topCards(gs) == std::vector<Card>{
+        {Color::Diamond, 1},
+        {Color::Spade, 6},
+        {Color::Heart, 6},
+        {Color::Club, 6},
+    });
 }

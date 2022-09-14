@@ -13,10 +13,16 @@ std::vector<CardStorage *> collect_location_pointers(In begin, In end) {
     return adresses;
 }
 
-std::vector<Card> GameState::topCards(void) const {
+std::vector<Card> topCards(const GameState &gs) {
     std::vector<Card> cards;
 
-    for (auto &cs : homes_) {
+    for (auto &cs : gs.free_cells) {
+        auto opt_card = cs.topCard();
+        if (opt_card.has_value())
+            cards.push_back(*opt_card);
+    }
+
+    for (auto &cs : gs.stacks) {
         auto opt_card = cs.topCard();
         if (opt_card.has_value())
             cards.push_back(*opt_card);
@@ -27,16 +33,16 @@ std::vector<Card> GameState::topCards(void) const {
 
 void initializeGameState(GameState *gs) {
     for (int i=0; i <= 13; ++i)
-        gs->homes_[0].acceptCard({Color::Heart, i});    
+        gs->homes[0].acceptCard({Color::Heart, i});    
 
     for (int i=0; i <= 13; ++i)
-        gs->homes_[1].acceptCard({Color::Diamond, i});    
+        gs->homes[1].acceptCard({Color::Diamond, i});    
 
     for (int i=0; i <= 13; ++i)
-        gs->homes_[2].acceptCard({Color::Club, i});    
+        gs->homes[2].acceptCard({Color::Club, i});    
 
     for (int i=0; i <= 13; ++i)
-        gs->homes_[3].acceptCard({Color::Spade, i});    
+        gs->homes[3].acceptCard({Color::Spade, i});    
 
     std::random_device dev;
     std::default_random_engine rng(dev());
@@ -48,8 +54,8 @@ int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, 
     int i = 0;
     for (; i < max_nb_cards; ++i) {
         auto moves = availableMoves(
-            collect_location_pointers(gs->homes_.begin(), gs->homes_.end()),
-            collect_location_pointers(gs->stacks_.begin(), gs->stacks_.begin()+nb_homes_available)
+            collect_location_pointers(gs->homes.begin(), gs->homes.end()),
+            collect_location_pointers(gs->stacks.begin(), gs->stacks.begin()+nb_homes_available)
         );
 
         if (moves.size() == 0)
@@ -64,18 +70,18 @@ int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, 
 
 std::ostream& operator<< (std::ostream& os, const GameState & state) {
     os << "Homes: " <<
-        state.homes_[0] << " " <<
-        state.homes_[1] << " " <<
-        state.homes_[2] << " " <<
-        state.homes_[3] << "\n";
+        state.homes[0] << " " <<
+        state.homes[1] << " " <<
+        state.homes[2] << " " <<
+        state.homes[3] << "\n";
 
     os << "FreeCells: " <<
-        state.free_cells_[0] << " " <<
-        state.free_cells_[1] << " " <<
-        state.free_cells_[2] << " " <<
-        state.free_cells_[3] << "\n";
+        state.free_cells[0] << " " <<
+        state.free_cells[1] << " " <<
+        state.free_cells[2] << " " <<
+        state.free_cells[3] << "\n";
 
-    for (auto stack : state.stacks_) {
+    for (auto stack : state.stacks) {
         os << stack << "\n";
     }
 

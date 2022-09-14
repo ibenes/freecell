@@ -11,7 +11,7 @@ fc-sui: fc-sui.o card.o card-storage.o move.o game.o
 clean:
 	rm -f fc-sui test-bin *.o
 
-test-bin: test-main.o test.o card.o card-storage.o move.o
+test-bin: test-main.o test.o card.o card-storage.o move.o game.o
 	$(CXX) $^ -o $@
 
 test: test-bin
