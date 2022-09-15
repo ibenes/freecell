@@ -39,6 +39,8 @@ public:
     const std::optional<Card> topCard() const override;
     std::optional<Card> getCard() override;
 
+	size_t nbCards() const;
+
     friend std::ostream& operator<< (std::ostream& os, const WorkStack & stack) ;
 
 private:

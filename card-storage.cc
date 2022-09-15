@@ -124,3 +124,7 @@ std::ostream& operator<< (std::ostream& os, const WorkStack & stack) {
 
     return os;
 }
+
+size_t WorkStack::nbCards() const {
+	return storage_.size();
+}

@@ -106,6 +106,8 @@ TEST_CASE("Home destiation operations") {
 TEST_CASE("Work stack operations") {
     WorkStack stack;
 
+	REQUIRE(stack.nbCards() == 0);
+
 	REQUIRE(workStackRepresentation(stack) == "_");
 	REQUIRE_FALSE(stack.topCard().has_value());
 	REQUIRE_FALSE(stack.getCard().has_value());
@@ -114,21 +116,26 @@ TEST_CASE("Work stack operations") {
 	REQUIRE(stack.acceptCard({Color::Heart, 3}));
 	REQUIRE(workStackRepresentation(stack) == "3h");
 	REQUIRE(cardRepresentation(*stack.topCard()) == "3h");
+	REQUIRE(stack.nbCards() == 1);
 
 	REQUIRE_FALSE(stack.acceptCard({Color::Heart, 3}));
 	REQUIRE_FALSE(stack.acceptCard({Color::Heart, 2}));
 	REQUIRE_FALSE(stack.acceptCard({Color::Spade, 3}));
 	REQUIRE_FALSE(stack.acceptCard({Color::Spade, 4}));
+	REQUIRE(stack.nbCards() == 1);
 
 	REQUIRE(stack.acceptCard({Color::Spade, 2}));
 	REQUIRE(workStackRepresentation(stack) == "3h 2s");
+	REQUIRE(stack.nbCards() == 2);
 
 	REQUIRE_FALSE(stack.acceptCard({Color::Heart, 3}));
 	REQUIRE_FALSE(stack.acceptCard({Color::Heart, 2}));
 	REQUIRE_FALSE(stack.acceptCard({Color::Club, 1}));
+	REQUIRE(stack.nbCards() == 2);
 
 	REQUIRE(stack.acceptCard({Color::Diamond, 1}));
 	REQUIRE(workStackRepresentation(stack) == "3h 2s 1d");
+	REQUIRE(stack.nbCards() == 3);
 }
 
 TEST_CASE("Moves to home destination") {
