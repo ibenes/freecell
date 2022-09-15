@@ -35,25 +35,13 @@ std::vector<Card> topCards(const GameState &gs) {
     return cards;
 }
 
-void initializeGameState(GameState *gs) {
-    for (size_t i=0; i<colors_list.size(); ++i) {
-        for (int j=1; j <= king_value; ++j)
-            gs->homes[i].acceptCard({colors_list[i], j});
-    }
-
-    std::random_device dev;
-    std::default_random_engine rng(dev());
-
-    moveCardsFromHomes(gs, colors_list.size()*king_value, colors_list.size(), rng);
-}
-
-int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, std::default_random_engine rng) {
+int moveCardsFromHomes(GameState *gs, int max_nb_cards, size_t stack_begin, size_t stack_end, std::default_random_engine rng) {
     int nb_cards_moved = 0;
     for (; nb_cards_moved < max_nb_cards; ++nb_cards_moved) {
         auto home_id = nb_cards_moved % gs->homes.size();
         auto moves = availableMoves(
             collect_location_pointers(gs->homes.begin() + home_id, gs->homes.begin() + home_id + 1),
-            collect_location_pointers(gs->stacks.begin(), gs->stacks.begin()+nb_homes_available)
+            collect_location_pointers(gs->stacks.begin() + stack_begin, gs->stacks.begin() + stack_end)
         );
 
         if (moves.size() == 0)
@@ -64,6 +52,52 @@ int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, 
     }
 
     return nb_cards_moved;
+}
+
+void forceMove(CardStorage *from, WorkStack *to) {
+    to->forceCard(*from->getCard());
+}
+
+void initializeGameState(GameState *gs, std::default_random_engine &rng) {
+    for (size_t i=0; i<colors_list.size(); ++i) {
+        for (int j=1; j <= king_value; ++j)
+            gs->homes[i].acceptCard({colors_list[i], j});
+    }
+
+    moveCardsFromHomes(gs, 20, 0, 5, rng);
+    moveCardsFromHomes(gs, 32, 0, 8, rng);
+}
+
+void irreversibleMove(GameState *gs, std::default_random_engine &rng) {
+    // number of cards that cannot be moved from the given stack 
+    // as it is irreversibely placed in its location
+    std::vector<size_t> frozen_level(gs->stacks.size(), 0);
+
+    std::vector<CardStorage *> possible_from;
+    for (auto &fc : gs->free_cells) {
+        if (fc.topCard().has_value())
+            possible_from.push_back(&fc);
+    }
+    for (size_t i=0; i < gs->stacks.size(); ++i) {
+        auto &stack = gs->stacks[i];
+        if (stack.topCard().has_value() && stack.nbCards() > frozen_level[i])
+            possible_from.push_back(&stack);
+    }
+    int pick_from = std::uniform_int_distribution<std::mt19937::result_type>(0, possible_from.size()-1)(rng);
+    auto from = possible_from[pick_from];
+
+    std::vector<WorkStack *> possible_to;
+    for (size_t i=0; i < gs->stacks.size(); ++i) {
+        auto &stack = gs->stacks[i];
+        bool move_elsewhere = &stack != from;
+        bool stack_not_overfull =stack.nbCards() <= 7;
+        if (move_elsewhere && stack_not_overfull)
+            possible_to.push_back(&stack);
+    }
+    int pick_to = std::uniform_int_distribution<std::mt19937::result_type>(0, possible_to.size()-1)(rng);
+    auto to = possible_to[pick_to];
+
+    forceMove(from, to); 
 }
 
 auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator {

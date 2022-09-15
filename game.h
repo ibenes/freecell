@@ -20,12 +20,12 @@ struct GameState {
 
 std::ostream& operator<< (std::ostream& os, const GameState & state) ;
 
-void initializeGameState(GameState *gs) ;
+void initializeGameState(GameState *gs, std::default_random_engine &rng) ;
+void irreversibleMove(GameState *gs, std::default_random_engine &rng) ;
+
 std::vector<Card> topCards(const GameState &gs) ;
 bool cardIsHome(const GameState &gs, Card card) ;
 bool cardCouldGoHome(const GameState &gs, Card card) ;
 auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator;
 
 std::vector<RawMove> safeHomeMoves(GameState &gs) ;
-
-int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, std::default_random_engine rng) ;
