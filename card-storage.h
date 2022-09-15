@@ -41,6 +41,10 @@ public:
 
 	size_t nbCards() const;
 
+	// avoid canAccept, simply places the card on top
+	// useful for game setup
+    void forceCard(const Card & card);
+
     friend std::ostream& operator<< (std::ostream& os, const WorkStack & stack) ;
 
 private:

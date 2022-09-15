@@ -136,6 +136,14 @@ TEST_CASE("Work stack operations") {
 	REQUIRE(stack.acceptCard({Color::Diamond, 1}));
 	REQUIRE(workStackRepresentation(stack) == "3h 2s 1d");
 	REQUIRE(stack.nbCards() == 3);
+
+    stack.forceCard({Color::Diamond, 4});
+	REQUIRE(workStackRepresentation(stack) == "3h 2s 1d 4d");
+	REQUIRE(stack.nbCards() == 4);
+
+    stack.forceCard({Color::Spade, 3});
+	REQUIRE(workStackRepresentation(stack) == "3h 2s 1d 4d 3s");
+	REQUIRE(stack.nbCards() == 5);
 }
 
 TEST_CASE("Moves to home destination") {

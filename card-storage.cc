@@ -112,6 +112,10 @@ std::optional<Card> WorkStack::getCard() {
     }
 }
 
+void WorkStack::forceCard(const Card & card) {
+	storage_.push_back(card);
+}
+
 std::ostream& operator<< (std::ostream& os, const WorkStack & stack) {
 	if (stack.storage_.size() == 0) {
         os << "_"; 
