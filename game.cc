@@ -44,14 +44,15 @@ void initializeGameState(GameState *gs) {
     std::random_device dev;
     std::default_random_engine rng(dev());
 
-    moveCardsFromHomes(gs, 26, 4, rng);
+    moveCardsFromHomes(gs, colors_list.size()*king_value, colors_list.size(), rng);
 }
 
 int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, std::default_random_engine rng) {
-    int i = 0;
-    for (; i < max_nb_cards; ++i) {
+    int nb_cards_moved = 0;
+    for (; nb_cards_moved < max_nb_cards; ++nb_cards_moved) {
+        auto home_id = nb_cards_moved % gs->homes.size();
         auto moves = availableMoves(
-            collect_location_pointers(gs->homes.begin(), gs->homes.end()),
+            collect_location_pointers(gs->homes.begin() + home_id, gs->homes.begin() + home_id + 1),
             collect_location_pointers(gs->stacks.begin(), gs->stacks.begin()+nb_homes_available)
         );
 
@@ -62,7 +63,7 @@ int moveCardsFromHomes(GameState *gs, int max_nb_cards, int nb_homes_available, 
         move(moves[pick].first, moves[pick].second);
     }
 
-    return i;
+    return nb_cards_moved;
 }
 
 auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator {
