@@ -38,17 +38,22 @@ std::vector<Card> topCards(const GameState &gs) {
 int moveCardsFromHomes(GameState *gs, int max_nb_cards, size_t stack_begin, size_t stack_end, std::default_random_engine rng) {
     int nb_cards_moved = 0;
     for (; nb_cards_moved < max_nb_cards; ++nb_cards_moved) {
-        auto home_id = nb_cards_moved % gs->homes.size();
+        std::vector<CardStorage *> considered_froms{&gs->homes[nb_cards_moved % gs->homes.size()]};
+        std::vector<CardStorage *> considered_tos = collect_location_pointers(gs->stacks.begin() + stack_begin, gs->stacks.begin() + stack_end);
+
         auto moves = availableMoves(
-            collect_location_pointers(gs->homes.begin() + home_id, gs->homes.begin() + home_id + 1),
-            collect_location_pointers(gs->stacks.begin() + stack_begin, gs->stacks.begin() + stack_end)
+            considered_froms.begin(),
+            considered_froms.end(),
+            considered_tos.begin(),
+            considered_tos.end()
         );
 
         if (moves.size() == 0)
             break;
 
         int pick = std::uniform_int_distribution<std::mt19937::result_type>(0, moves.size()-1)(rng);
-        move(moves[pick].first, moves[pick].second);
+        // we have a non-const access to GameState (gs), so we are allowed to de-const the pointers in RawMove
+        move(const_cast<CardStorage *>(moves[pick].first), const_cast<CardStorage *>(moves[pick].second));
     }
 
     return nb_cards_moved;

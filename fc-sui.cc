@@ -24,7 +24,7 @@ int main() {
 	while ((safe_moves = safeHomeMoves(gs)), safe_moves.size() > 0) {
 		auto from = safe_moves[0].first;
 		auto to = safe_moves[0].second;
-		move(from, to);
+		move(const_cast<CardStorage *>(from), const_cast<CardStorage *>(to));
 	}
 	std::cout << gs;
 }

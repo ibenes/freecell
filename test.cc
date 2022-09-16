@@ -251,22 +251,23 @@ TEST_CASE("Move discovery") {
     FreeCell fc_1, fc_2;
 
     stack.acceptCard({Color::Heart, 7});
-    REQUIRE(availableMoves({&stack}, {&fc_1}) == std::vector<RawMove>{{&stack, &fc_1}});
-    REQUIRE(availableMoves({&stack}, {&fc_2}) == std::vector<RawMove>{{&stack, &fc_2}});
 
-    REQUIRE(availableMoves({&fc_1}, {&fc_2}) == std::vector<RawMove>{});
-    REQUIRE(availableMoves({}, {&fc_1}) == std::vector<RawMove>{});
-    REQUIRE(availableMoves({&stack}, {}) == std::vector<RawMove>{});
+    std::vector<WorkStack *> stacks{&stack};
+    std::vector<FreeCell *> free_cells{&fc_1, &fc_2};
+
+    REQUIRE(availableMoves(stacks.begin(), stacks.end(), free_cells.begin(), free_cells.begin() + 1) == std::vector<RawMove>{{&stack, &fc_1}});
+    REQUIRE(availableMoves(stacks.begin(), stacks.end(), free_cells.begin()+1, free_cells.end()) == std::vector<RawMove>{{&stack, &fc_2}});
+
+    REQUIRE(availableMoves(free_cells.begin(), free_cells.begin() + 1, free_cells.begin() + 1, free_cells.end()) == std::vector<RawMove>{});
+    REQUIRE(availableMoves(free_cells.begin(), free_cells.begin() + 1, free_cells.begin(), free_cells.begin() + 1) == std::vector<RawMove>{});
+    REQUIRE(availableMoves(stacks.begin(), stacks.end(), free_cells.begin(), free_cells.begin()) == std::vector<RawMove>{});
 
     fc_2.acceptCard({Color::Spade, 6});
+
+    std::vector<CardStorage *> tmp_2{&stack, &fc_2};
+    std::vector<CardStorage *> tmp_1{&fc_1, &stack};
     REQUIRE(
-        availableMoves({&stack, &fc_2}, {&fc_1}) ==
-        std::vector<RawMove>{
-            {&stack, &fc_1},
-            {&fc_2, &fc_1},
-        });
-    REQUIRE(
-        availableMoves({&stack, &fc_2}, {&fc_1, &stack}) ==
+        availableMoves(tmp_2.begin(), tmp_2.end(), tmp_1.begin(), tmp_1.end()) ==
         std::vector<RawMove>{
             {&stack, &fc_1},
             {&fc_2, &fc_1},
