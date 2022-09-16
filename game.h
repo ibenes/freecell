@@ -18,6 +18,16 @@ struct GameState {
     std::array<CardStorage *, nb_stacks+nb_freecells> non_homes;
 };
 
+enum class LocationClass {FreeCells, Homes, Stacks};
+struct Location {
+	LocationClass cl;
+	long id;
+};
+
+bool operator== (const Location &lhs, const Location &rhs) ;
+bool operator!= (const Location &lhs, const Location &rhs) ;
+
+
 std::ostream& operator<< (std::ostream& os, const GameState & state) ;
 
 void initializeGameState(GameState *gs, std::default_random_engine &rng) ;
@@ -29,5 +39,8 @@ std::vector<Card> topCards(const GameState &gs) ;
 bool cardIsHome(const GameState &gs, Card card) ;
 bool cardCouldGoHome(const GameState &gs, Card card) ;
 auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator;
+
+const CardStorage * ptrFromLoc(const GameState &gs, Location const& loc) ;
+Location locFromPtr(const GameState &gs, const CardStorage *ptr) ;
 
 std::vector<RawMove> safeHomeMoves(GameState &gs) ;

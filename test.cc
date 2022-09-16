@@ -404,3 +404,28 @@ TEST_CASE("Safe moving if other-color, lower-valued are home") {
         {&gs.free_cells[0], &gs.homes[2]},
     });
 }
+
+TEST_CASE("Location equality") {
+    REQUIRE(Location{LocationClass::Homes, 0} == Location{LocationClass::Homes, 0});
+    REQUIRE(Location{LocationClass::Homes, 0} != Location{LocationClass::Homes, 1});
+    REQUIRE(Location{LocationClass::Stacks, 0} != Location{LocationClass::Homes, 0});
+    REQUIRE(Location{LocationClass::Stacks, 0} != Location{LocationClass::Homes, 1});
+}
+
+TEST_CASE("Location -> ptr conversion") {
+    GameState gs;
+
+    REQUIRE(ptrFromLoc(gs, {LocationClass::Homes, 0}) == &gs.homes[0]);
+    REQUIRE(ptrFromLoc(gs, {LocationClass::Homes, 1}) == &gs.homes[1]);
+    REQUIRE(ptrFromLoc(gs, {LocationClass::Stacks, 0}) == &gs.stacks[0]);
+    REQUIRE(ptrFromLoc(gs, {LocationClass::FreeCells, 0}) == &gs.free_cells[0]);
+}
+
+TEST_CASE("Ptr -> location conversion") {
+    GameState gs;
+
+    REQUIRE(locFromPtr(gs, &gs.homes[0]) == Location{LocationClass::Homes, 0});
+    REQUIRE(locFromPtr(gs, &gs.stacks[2]) == Location{LocationClass::Stacks, 2});
+    REQUIRE(locFromPtr(gs, &gs.free_cells[3]) == Location{LocationClass::FreeCells, 3});
+}
+

@@ -63,6 +63,54 @@ void forceMove(CardStorage *from, WorkStack *to) {
     to->forceCard(*from->getCard());
 }
 
+const CardStorage * ptrFromLoc(const GameState &gs, Location const& loc) {
+    switch (loc.cl) {
+        case LocationClass::FreeCells:
+            return &gs.free_cells[loc.id];
+            break;
+        case LocationClass::Homes:
+            return &gs.homes[loc.id];
+            break;
+        case LocationClass::Stacks:
+            return &gs.stacks[loc.id];
+            break;
+        default:
+            return nullptr;
+    }
+}
+
+bool operator== (const Location &lhs, const Location &rhs) {
+    return lhs.cl == rhs.cl && lhs.id == rhs.id;
+}
+
+bool operator!= (const Location &lhs, const Location &rhs) {
+    return !(lhs == rhs);
+}
+
+// to be used only with continuous-storage containers
+template<typename T>
+bool isInContainer(const CardStorage *ptr, const T& container) {
+    return ptr >= &container[0] && ptr <= &container[container.size()-1];
+}
+
+// to be used only with continuous-storage containers
+template<typename T>
+long positionInContainer(const CardStorage *ptr, const T& container) {
+    return static_cast<const decltype(&container[0])>(ptr) - &container[0];
+}
+
+
+Location locFromPtr(const GameState &gs, const CardStorage *ptr) {
+    if (isInContainer(ptr, gs.homes))
+        return {LocationClass::Homes, positionInContainer(ptr, gs.homes)};
+    else if (isInContainer(ptr, gs.stacks))
+        return {LocationClass::Stacks, positionInContainer(ptr, gs.stacks)};
+    else if (isInContainer(ptr, gs.free_cells))
+        return {LocationClass::FreeCells, positionInContainer(ptr, gs.free_cells)};
+    else
+        throw std::out_of_range("Pointer doesn't match any of homes, freecells or stacks in the given GameState");
+}
+
 void initializeGameState(GameState *gs, std::default_random_engine &rng) {
     for (size_t i=0; i<colors_list.size(); ++i) {
         for (int j=1; j <= king_value; ++j)
