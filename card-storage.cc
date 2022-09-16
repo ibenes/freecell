@@ -1,6 +1,6 @@
 #include "card-storage.h"
 
-bool HomeDestination::canAccept(const Card & card) {
+bool HomeDestination::canAccept(const Card & card) const {
     if (storage_.size() == 0) {
 		return card.value == 1;
     } else {
@@ -42,7 +42,7 @@ std::ostream& operator<< (std::ostream& os, const HomeDestination & hd) {
 }
 
 
-bool FreeCell::canAccept([[maybe_unused]] const Card & card) {
+bool FreeCell::canAccept([[maybe_unused]] const Card & card) const {
 	return !cell_.has_value();
 }
 
@@ -76,7 +76,7 @@ std::ostream& operator<< (std::ostream& os, const FreeCell & fc) {
 }
 
 
-bool WorkStack::canAccept(const Card & card) {
+bool WorkStack::canAccept(const Card & card) const {
     if (storage_.size() == 0) {
         return true;
     } else {

@@ -10,7 +10,7 @@
 
 class CardStorage {
 public:
-	virtual bool canAccept(const Card & card) = 0;
+	virtual bool canAccept(const Card & card) const = 0;
     virtual bool acceptCard(const Card & card) = 0;
     virtual const std::optional<Card> topCard() const = 0;
     virtual std::optional<Card> getCard() = 0;
@@ -20,7 +20,7 @@ public:
 
 class HomeDestination : public CardStorage {
 public:
-	bool canAccept(const Card & card) override;
+	bool canAccept(const Card & card) const override;
     bool acceptCard(const Card & card) override;
     const std::optional<Card> topCard() const override;
     std::optional<Card> getCard() override;
@@ -34,7 +34,7 @@ private:
 
 class WorkStack : public CardStorage {
 public:
-	bool canAccept(const Card & card) override;
+	bool canAccept(const Card & card) const override;
     bool acceptCard(const Card & card) override;
     const std::optional<Card> topCard() const override;
     std::optional<Card> getCard() override;
@@ -54,7 +54,7 @@ private:
 
 class FreeCell : public CardStorage {
 public:
-	bool canAccept(const Card & card) override;
+	bool canAccept(const Card & card) const override;
     bool acceptCard(const Card & card) override;
     const std::optional<Card> topCard() const override;
     std::optional<Card> getCard() override;
