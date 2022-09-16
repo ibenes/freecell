@@ -159,11 +159,11 @@ std::optional<std::pair<CardStorage *, WorkStack *>> findIrreversibleMove(GameSt
     return std::make_pair(from, to);
 }
 
-auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator {
+auto findHomeFor(const GameState &gs, Card card) -> decltype(gs.homes)::const_iterator {
     return std::find_if(
         gs.homes.begin(),
         gs.homes.end(),
-        [&](CardStorage &cs){return cs.canAccept(card);}
+        [&](const CardStorage &cs){return cs.canAccept(card);}
     );
 }
 
@@ -202,7 +202,7 @@ bool cardCouldGoHome(const GameState &gs, Card card) {
     return safe;
 }
 
-std::vector<RawMove> safeHomeMoves(GameState &gs) {
+std::vector<RawMove> safeHomeMoves(const GameState &gs) {
     std::vector<RawMove> moves;
 
     for (auto &cs : gs.non_homes) {

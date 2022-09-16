@@ -38,9 +38,9 @@ void forceMove(CardStorage *from, WorkStack *to) ;
 std::vector<Card> topCards(const GameState &gs) ;
 bool cardIsHome(const GameState &gs, Card card) ;
 bool cardCouldGoHome(const GameState &gs, Card card) ;
-auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator;
+auto findHomeFor(const GameState &gs, Card card) -> decltype(gs.homes)::const_iterator;
 
 const CardStorage * ptrFromLoc(const GameState &gs, Location const& loc) ;
 Location locFromPtr(const GameState &gs, const CardStorage *ptr) ;
 
-std::vector<RawMove> safeHomeMoves(GameState &gs) ;
+std::vector<RawMove> safeHomeMoves(const GameState &gs) ;
