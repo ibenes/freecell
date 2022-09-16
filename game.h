@@ -21,7 +21,9 @@ struct GameState {
 std::ostream& operator<< (std::ostream& os, const GameState & state) ;
 
 void initializeGameState(GameState *gs, std::default_random_engine &rng) ;
-void irreversibleMove(GameState *gs, std::default_random_engine &rng) ;
+std::optional<std::pair<CardStorage *, WorkStack *>> findIrreversibleMove(GameState *gs, std::default_random_engine &rng) ;
+
+void forceMove(CardStorage *from, WorkStack *to) ;
 
 std::vector<Card> topCards(const GameState &gs) ;
 bool cardIsHome(const GameState &gs, Card card) ;

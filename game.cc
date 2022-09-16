@@ -68,7 +68,7 @@ void initializeGameState(GameState *gs, std::default_random_engine &rng) {
     moveCardsFromHomes(gs, 32, 0, 8, rng);
 }
 
-void irreversibleMove(GameState *gs, std::default_random_engine &rng) {
+std::optional<std::pair<CardStorage *, WorkStack *>> findIrreversibleMove(GameState *gs, std::default_random_engine &rng) {
     // number of cards that cannot be moved from the given stack 
     // as it is irreversibely placed in its location
     std::vector<size_t> frozen_level(gs->stacks.size(), 0);
@@ -83,6 +83,9 @@ void irreversibleMove(GameState *gs, std::default_random_engine &rng) {
         if (stack.topCard().has_value() && stack.nbCards() > frozen_level[i])
             possible_from.push_back(&stack);
     }
+    if (possible_from.size() == 0)
+        return std::nullopt;
+
     int pick_from = std::uniform_int_distribution<std::mt19937::result_type>(0, possible_from.size()-1)(rng);
     auto from = possible_from[pick_from];
 
@@ -94,10 +97,13 @@ void irreversibleMove(GameState *gs, std::default_random_engine &rng) {
         if (move_elsewhere && stack_not_overfull)
             possible_to.push_back(&stack);
     }
+    if (possible_to.size() == 0)
+        return std::nullopt;
+
     int pick_to = std::uniform_int_distribution<std::mt19937::result_type>(0, possible_to.size()-1)(rng);
     auto to = possible_to[pick_to];
 
-    forceMove(from, to); 
+    return std::make_pair(from, to);
 }
 
 auto findHomeFor(GameState &gs, Card card) -> decltype(gs.homes)::iterator {

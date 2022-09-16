@@ -13,9 +13,12 @@ int main() {
     std::cout << gs;
 	std::cout << "\n";
 
-	irreversibleMove(&gs, rng);
-    std::cout << gs;
-	std::cout << "\n";
+	std::optional<std::pair<CardStorage *, WorkStack * >> irr_move;
+	while((irr_move = findIrreversibleMove(&gs, rng)), irr_move.has_value()) {
+		forceMove(irr_move->first, irr_move->second);
+		std::cout << gs;
+		std::cout << "\n";
+	}
 
 	std::vector<RawMove> safe_moves;
 	while ((safe_moves = safeHomeMoves(gs)), safe_moves.size() > 0) {
