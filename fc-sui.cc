@@ -1,12 +1,14 @@
 #include "move.h"
 #include "game.h"
+#include "search-interface.h"
 
+#include <cassert>
 #include <iostream>
 
 
 int main() {
     std::random_device dev;
-    std::default_random_engine rng(dev());
+    std::default_random_engine rng(1);
 
     GameState gs{};
     initializeGameState(&gs, rng);
@@ -18,13 +20,15 @@ int main() {
 		forceMove(irr_move->first, irr_move->second);
 		std::cout << gs;
 		std::cout << "\n";
+		break;
 	}
 
-	std::vector<RawMove> safe_moves;
-	while ((safe_moves = safeHomeMoves(gs)), safe_moves.size() > 0) {
-		auto from = safe_moves[0].first;
-		auto to = safe_moves[0].second;
-		move(const_cast<CardStorage *>(from), const_cast<CardStorage *>(to));
-	}
-	std::cout << gs;
+	SearchState init_state(gs);
+	std::cout << init_state;
+	std::cout << "State finality: " << init_state.isFinal() << "\n";
+
+	assert(init_state.execute({LocationClass::Stacks, 2}, {LocationClass::FreeCells, 0}));
+	std::cout << init_state;
+	std::cout << "State finality: " << init_state.isFinal() << "\n";
+
 }

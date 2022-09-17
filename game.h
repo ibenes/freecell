@@ -1,3 +1,6 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include "card-storage.h"
 #include "move.h"
 
@@ -10,12 +13,16 @@ inline constexpr int nb_stacks = 8;
 
 struct GameState {
     GameState(void);
+    GameState(const GameState &other);
+    GameState& operator=(const GameState &other) = delete;
 
     std::array<HomeDestination, nb_homes> homes;
     std::array<FreeCell, nb_freecells> free_cells;
     std::array<WorkStack, nb_stacks> stacks;
 
     std::array<CardStorage *, nb_stacks+nb_freecells> non_homes;
+
+    void recalculateNonHomes(void) ;
 };
 
 enum class LocationClass {FreeCells, Homes, Stacks};
@@ -27,6 +34,7 @@ struct Location {
 bool operator== (const Location &lhs, const Location &rhs) ;
 bool operator!= (const Location &lhs, const Location &rhs) ;
 
+std::ostream& operator<< (std::ostream& os, const Location & state) ;
 
 std::ostream& operator<< (std::ostream& os, const GameState & state) ;
 
@@ -44,3 +52,5 @@ const CardStorage * ptrFromLoc(const GameState &gs, Location const& loc) ;
 Location locFromPtr(const GameState &gs, const CardStorage *ptr) ;
 
 std::vector<RawMove> safeHomeMoves(const GameState &gs) ;
+
+#endif

@@ -1,9 +1,9 @@
-CXXFLAGS=-std=c++17 -Wall -Wextra -pedantic
+CXXFLAGS=-std=c++17 -Wall -Wextra -pedantic -g
 
 BUILD_DIR=./build
 DEP_DIR=./dep
 
-SOURCES = card.cc card-storage.cc move.cc game.cc
+SOURCES = card.cc card-storage.cc move.cc game.cc search-interface.o
 OBJ = $(SOURCES:%.cc=$(BUILD_DIR)/%.o)
 
 all: $(BUILD_DIR) $(DEP_DIR) fc-sui
