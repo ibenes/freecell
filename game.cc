@@ -15,16 +15,23 @@ std::vector<CardStorage *> collect_location_pointers(In begin, In end) {
 }
 
 GameState::GameState(void) {
-    recalculateNonHomes();
+    recalculatePointerArrays_();
 }
 
-void GameState::recalculateNonHomes(void) {
+void GameState::recalculatePointerArrays_(void) {
     assert(nb_freecells == nb_homes);
-    for (int i=0; i<nb_freecells; ++i)
+    for (int i=0; i<nb_freecells; ++i) {
         non_homes[i] = &free_cells[i];
+        all_storage[i] = &free_cells[i];
+    }
 
-    for (int i=0; i<nb_stacks; ++i)
+    for (int i=0; i<nb_stacks; ++i) {
         non_homes[i + nb_freecells] = &stacks[i];
+        all_storage[i + nb_freecells] = &stacks[i];
+    }
+
+    for (int i=0; i<nb_homes; ++i)
+        all_storage[i + nb_freecells + nb_stacks] = &homes[i];
 }
 
 GameState::GameState(const GameState &other) :
@@ -32,7 +39,7 @@ GameState::GameState(const GameState &other) :
         free_cells(other.free_cells),
         stacks(other.stacks) 
     {
-    recalculateNonHomes();
+    recalculatePointerArrays_();
 }
 
 std::vector<Card> topCards(const GameState &gs) {

@@ -27,8 +27,12 @@ int main() {
 	std::cout << init_state;
 	std::cout << "State finality: " << init_state.isFinal() << "\n";
 
-	assert(init_state.execute({LocationClass::Stacks, 2}, {LocationClass::FreeCells, 0}));
+	auto actions = init_state.actions();
+	auto final_state = actions[14].execute(init_state); // manually selected to solve the problem
+
 	std::cout << init_state;
 	std::cout << "State finality: " << init_state.isFinal() << "\n";
 
+	std::cout << final_state;
+	std::cout << "State finality: " << final_state.isFinal() << "\n";
 }

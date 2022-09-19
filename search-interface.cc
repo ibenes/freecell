@@ -2,10 +2,11 @@
 #include "game.h"
 
 #include <cassert>
+#include <algorithm>
 
 SearchState SearchAction::execute(const SearchState& state) const {
 	SearchState new_state(state);
-	bool succeeded = new_state.execute(from, to);
+	bool succeeded = new_state.execute(from_, to_);
 	assert(succeeded);
 
 	return new_state;
@@ -44,7 +45,32 @@ bool SearchState::isFinal() const {
 	return true;
 }
 
-std::ostream& operator<< (std::ostream& os, const SearchState & ss) {
-	os << ss.state_;
+std::vector<SearchAction> SearchState::actions() const {
+	auto raw_moves = availableMoves(
+		state_.non_homes.begin(),
+		state_.non_homes.end(),
+		state_.all_storage.begin(),
+		state_.all_storage.end()
+	);	
+
+	std::vector<SearchAction> moves;
+	std::transform(
+		raw_moves.begin(),
+		raw_moves.end(),
+		std::back_inserter(moves),
+		[&](RawMove raw_move){
+			return SearchAction{locFromPtr(state_, raw_move.first), locFromPtr(state_, raw_move.second)};
+		}
+	);
+	return moves;
+}
+
+std::ostream& operator<< (std::ostream& os, const SearchState & state) {
+	os << state.state_;
+	return os;
+}
+
+std::ostream& operator<< (std::ostream& os, const SearchAction & action) {
+	os << action.from_ << " " << action.to_;
 	return os;
 }

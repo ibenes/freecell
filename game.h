@@ -21,8 +21,9 @@ struct GameState {
     std::array<WorkStack, nb_stacks> stacks;
 
     std::array<CardStorage *, nb_stacks+nb_freecells> non_homes;
+    std::array<CardStorage *, nb_stacks+nb_freecells+nb_homes> all_storage;
 
-    void recalculateNonHomes(void) ;
+    void recalculatePointerArrays_(void) ;
 };
 
 enum class LocationClass {FreeCells, Homes, Stacks};
