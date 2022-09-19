@@ -33,4 +33,9 @@ private:
 	GameState state_;
 };
 
+class SearchStrategyItf {
+public:
+	virtual std::vector<SearchAction> solve(const SearchState &init_state) =0 ;
+};
+
 #endif

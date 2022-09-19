@@ -54,6 +54,15 @@ bool FreeCell::acceptCard(const Card & card) {
     return move_ok;
 }
 
+FreeCell & FreeCell::operator=(FreeCell &other) {
+	if (other.cell_.has_value())
+		cell_.emplace(*other.cell_);
+	else
+		cell_ = std::nullopt;
+
+	return *this;
+}
+
 const std::optional<Card> FreeCell::topCard() const {
 	return cell_;
 }

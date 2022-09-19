@@ -20,6 +20,7 @@ inline constexpr int king_value = 13;
 
 struct Card {
 	Card(Color col, int val);
+
 	const Color color;
 	const int value;
 };

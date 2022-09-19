@@ -54,6 +54,8 @@ private:
 
 class FreeCell : public CardStorage {
 public:
+	FreeCell & operator=(FreeCell &other) ;
+
 	bool canAccept(const Card & card) const override;
     bool acceptCard(const Card & card) override;
     const std::optional<Card> topCard() const override;

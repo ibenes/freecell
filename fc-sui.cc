@@ -1,14 +1,18 @@
 #include "move.h"
 #include "game.h"
 #include "search-interface.h"
+#include "search-strategies.h"
 
 #include <cassert>
 #include <iostream>
+#include <memory>
 
 
 int main() {
     std::random_device dev;
     std::default_random_engine rng(1);
+
+	std::unique_ptr<SearchStrategyItf> search_strategy = std::make_unique<DummySearch>();
 
     GameState gs{};
     initializeGameState(&gs, rng);
@@ -27,12 +31,17 @@ int main() {
 	std::cout << init_state;
 	std::cout << "State finality: " << init_state.isFinal() << "\n";
 
-	auto actions = init_state.actions();
-	auto final_state = actions[14].execute(init_state); // manually selected to solve the problem
+	auto solution = search_strategy->solve(init_state);
 
+	SearchState in_progress(init_state);
+	for (const auto & action : solution) {
+		std::cout << "Execution action " << action << "\n";
+		in_progress = action.execute(in_progress);
+		std::cout << in_progress;
+		std::cout << "State finality: " << in_progress.isFinal() << "\n";
+	}
+
+	std::cout << "\nFor comparison, the initial state was:\n";
 	std::cout << init_state;
 	std::cout << "State finality: " << init_state.isFinal() << "\n";
-
-	std::cout << final_state;
-	std::cout << "State finality: " << final_state.isFinal() << "\n";
 }

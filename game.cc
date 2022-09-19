@@ -42,6 +42,18 @@ GameState::GameState(const GameState &other) :
     recalculatePointerArrays_();
 }
 
+GameState& GameState::operator=(GameState &&other) {
+    std::swap(homes, other.homes);
+    std::swap(stacks, other.stacks);
+
+    for (size_t i = 0; i < nb_freecells; ++i)
+        free_cells[i] = other.free_cells[i];
+
+    recalculatePointerArrays_();
+    
+    return *this;
+}
+
 std::vector<Card> topCards(const GameState &gs) {
     std::vector<Card> cards;
 

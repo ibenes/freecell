@@ -14,7 +14,7 @@ inline constexpr int nb_stacks = 8;
 struct GameState {
     GameState(void);
     GameState(const GameState &other);
-    GameState& operator=(const GameState &other) = delete;
+    GameState& operator=(GameState &&other);
 
     std::array<HomeDestination, nb_homes> homes;
     std::array<FreeCell, nb_freecells> free_cells;
