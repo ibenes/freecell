@@ -3,6 +3,8 @@
 #include "search-interface.h"
 #include "search-strategies.h"
 
+#include "argparse.h"
+
 #include <cassert>
 #include <chrono>
 #include <iostream>
@@ -58,14 +60,27 @@ void eval_strategy(
 }
 
 
-int main() {
+int main(int argc, const char *argv[]) {
+    argparse::ArgumentParser parser("FreeCell@SUI");
+    parser.add_argument("nb_games").scan<'d', int>();
+    parser.add_argument("seed").scan<'d', int>();
+
+    try {
+        parser.parse_args(argc, argv);
+    } catch (const std::runtime_error &err) {
+        std::cerr << err.what() << "\n";
+        std::cerr << parser;
+        std::exit(2);
+    }
+
     std::random_device dev;
-    std::default_random_engine rng(1);
+    std::default_random_engine rng(parser.get<int>("seed"));
 
 	std::unique_ptr<SearchStrategyItf> search_strategy = std::make_unique<DummySearch>(1000, rng);
     StrategyEvaluation evaluation_record{};
 
-    for (int i = 0; i < 250; ++i) {
+    auto nb_games = parser.get<int>("nb_games");
+    for (int i = 0; i < nb_games; ++i) {
         GameState gs{};
         initializeFullRandom(&gs, rng);
         SearchState init_state(gs);
