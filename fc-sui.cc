@@ -17,10 +17,17 @@ struct StrategyEvaluation {
 };
 
 std::ostream& operator<< (std::ostream& os, const StrategyEvaluation &report) {
-    os << "Solved " << report.nb_solved << " / " << report.nb_solved + report.nb_failed <<
-        " [ " << 100.0*report.nb_solved / (report.nb_solved + report.nb_failed) << " % ]. " <<
-        "Avg solution length " << 1.0 * report.total_solution_length / report.nb_solved << " steps, "
-        "Avg time taken: " << (report.time_taken / report.nb_solved).count() << " us \n";
+    if (report.nb_solved > 0) {
+        os << "Solved " << report.nb_solved << " / " << report.nb_solved + report.nb_failed <<
+            " [ " << 100.0*report.nb_solved / (report.nb_solved + report.nb_failed) << " % ]. " <<
+            "Avg solution length " << 1.0 * report.total_solution_length / report.nb_solved << " steps, "
+            "Avg time taken: " << (report.time_taken / report.nb_solved).count() << " us \n";
+    } else {
+        os << "Solved " << report.nb_solved << " / " << report.nb_solved + report.nb_failed <<
+            " [ 0 % ]. " <<
+            "Avg solution length NA steps, "
+            "Avg time taken: NA us \n";
+    }
 
     return os;
 }
@@ -58,19 +65,26 @@ int main() {
 	std::unique_ptr<SearchStrategyItf> search_strategy = std::make_unique<DummySearch>();
     StrategyEvaluation evaluation_record{};
 
-    for (int i = 0; i < 42; ++i) {
-        GameState gs{};
-        initializeGameState(&gs, rng);
+    GameState gs{};
+    initializeFullRandom(&gs, rng);
+    std::cout << gs;
 
-        std::optional<std::pair<CardStorage *, WorkStack * >> irr_move;
-        while((irr_move = findIrreversibleMove(&gs, rng)), irr_move.has_value()) {
-            forceMove(irr_move->first, irr_move->second);
-            break;
-        }
-        SearchState init_state(gs);
-
-        eval_strategy(search_strategy, init_state, &evaluation_record);
-    }
+    // for (int i = 0; i < 42; ++i) {
+    //     GameState gs{};
+    //     initializeFullRandom(&gs, rng);
+    //     std::cout << gs;
+    //
+    //     initializeGameState(&gs, rng);
+    //
+    //     std::optional<std::pair<CardStorage *, WorkStack * >> irr_move;
+    //     while((irr_move = findIrreversibleMove(&gs, rng)), irr_move.has_value()) {
+    //         forceMove(irr_move->first, irr_move->second);
+    //         break;
+    //     }
+    //     SearchState init_state(gs);
+    //
+    //     // eval_strategy(search_strategy, init_state, &evaluation_record);
+    // }
 
     std::cout << evaluation_record;
 }

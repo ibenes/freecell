@@ -90,6 +90,31 @@ int moveCardsFromHomes(GameState *gs, int max_nb_cards, size_t stack_begin, size
     return nb_cards_moved;
 }
 
+void initializeFullRandom(GameState *gs, std::default_random_engine &rng) {
+	std::vector<Card> all_cards;
+	for (auto color: colors_list) {
+		for (int value = 1; value <= king_value; ++value)
+			all_cards.push_back({color, value});
+	}
+
+	std::vector<size_t> order;
+	for (size_t i = 0; i < all_cards.size(); ++i)
+		order.push_back(i);
+
+	std::shuffle(order.begin(), order.end(), rng);
+
+	assert(gs->stacks.size() == 8);
+	auto card_id_it = order.begin();
+	for (size_t stack_id = 0; stack_id < gs->stacks.size(); ++stack_id) {
+		size_t cards_in_stack = stack_id < 4 ? 7 : 6;
+		for (size_t i = 0; i < cards_in_stack; ++i) {
+			gs->stacks[stack_id].forceCard(all_cards[*card_id_it]);
+			++card_id_it;
+		}
+	}
+	assert(card_id_it == order.end());
+}
+
 void forceMove(CardStorage *from, WorkStack *to) {
     to->forceCard(*from->getCard());
 }
