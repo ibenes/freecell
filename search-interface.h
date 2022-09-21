@@ -21,16 +21,19 @@ private:
 
 class SearchState {
 public:
-	SearchState(GameState state) : state_(state) {}
+    SearchState(GameState state) : state_(state) {}
+
 	bool isFinal() const;
 	std::vector<SearchAction> actions() const;
 
 	bool execute(Location from, Location to);
+    static unsigned long long nbExpanded();
 
     friend std::ostream& operator<< (std::ostream& os, const SearchState & state) ;
 private:
 	void runSafeMoves_();
 	GameState state_;
+    static unsigned long long nb_expanded;
 };
 
 class SearchStrategyItf {

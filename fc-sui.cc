@@ -15,6 +15,7 @@ struct StrategyEvaluation {
     unsigned long nb_solved;
     unsigned long nb_failed;
     unsigned long total_solution_length;
+    unsigned long long nb_states_expanded;
     std::chrono::microseconds time_taken;
 };
 
@@ -23,12 +24,16 @@ std::ostream& operator<< (std::ostream& os, const StrategyEvaluation &report) {
         os << "Solved " << report.nb_solved << " / " << report.nb_solved + report.nb_failed <<
             " [ " << 100.0*report.nb_solved / (report.nb_solved + report.nb_failed) << " % ]. " <<
             "Avg solution length " << 1.0 * report.total_solution_length / report.nb_solved << " steps, "
-            "Avg time taken: " << (report.time_taken / report.nb_solved).count() << " us \n";
+            "Avg time taken: " << (report.time_taken / report.nb_solved).count() << " us " <<
+            "Total #states expaned: " << report.nb_states_expanded << 
+            "\n";
     } else {
         os << "Solved " << report.nb_solved << " / " << report.nb_solved + report.nb_failed <<
             " [ 0 % ]. " <<
-            "Avg solution length NA steps, "
-            "Avg time taken: NA us \n";
+            "Avg solution length NA steps, " <<
+            "Avg time taken: NA us " <<
+            "Total #states expaned: " << report.nb_states_expanded << 
+            "\n";
     }
 
     return os;
@@ -57,6 +62,7 @@ void eval_strategy(
     } else {
         report->nb_failed++;
     }
+    report->nb_states_expanded = SearchState::nbExpanded();
 }
 
 

@@ -4,6 +4,11 @@
 #include <cassert>
 #include <algorithm>
 
+
+unsigned long long SearchState::nbExpanded() {
+    return SearchState::nb_expanded;
+}
+
 SearchState SearchAction::execute(const SearchState& state) const {
 	SearchState new_state(state);
 	bool succeeded = new_state.execute(from_, to_);
@@ -22,6 +27,8 @@ bool SearchState::execute(Location from, Location to) {
 	move(const_cast<CardStorage *>(from_ptr), const_cast<CardStorage *>(to_ptr));
 
 	runSafeMoves_();
+
+    SearchState::nb_expanded++;
 
 	return true;
 }
@@ -44,6 +51,8 @@ bool SearchState::isFinal() const {
 
 	return true;
 }
+
+unsigned long long SearchState::nb_expanded = 0;
 
 std::vector<SearchAction> SearchState::actions() const {
 	auto raw_moves = availableMoves(
