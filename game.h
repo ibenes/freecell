@@ -4,6 +4,7 @@
 #include "card-storage.h"
 #include "move.h"
 
+#include <array>
 #include <random>
 
 inline constexpr int nb_freecells = 4;
