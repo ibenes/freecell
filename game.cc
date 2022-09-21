@@ -5,6 +5,8 @@
 #include <cassert>
 #include <random>
 
+#include <tuple>
+
 template <typename In>
 std::vector<CardStorage *> collect_location_pointers(In begin, In end) {
     std::vector<CardStorage *> adresses;
@@ -52,6 +54,18 @@ GameState& GameState::operator=(GameState &&other) {
     recalculatePointerArrays_();
     
     return *this;
+}
+
+bool operator<(const GameState &lhs, const GameState &rhs) {
+    auto lhs_tuple = std::tie(lhs.homes, lhs.stacks, lhs.free_cells);
+    auto rhs_tuple = std::tie(rhs.homes, rhs.stacks, rhs.free_cells);
+    return lhs_tuple < rhs_tuple;
+}
+
+bool operator==(const GameState &lhs, const GameState &rhs) {
+    auto lhs_tuple = std::tie(lhs.homes, lhs.stacks, lhs.free_cells);
+    auto rhs_tuple = std::tie(rhs.homes, rhs.stacks, rhs.free_cells);
+    return lhs_tuple == rhs_tuple;
 }
 
 std::vector<Card> topCards(const GameState &gs) {

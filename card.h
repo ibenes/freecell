@@ -25,8 +25,9 @@ struct Card {
 	const int value;
 };
 
-bool operator== (const Card &a, const Card &b) ;
-bool operator!= (const Card &a, const Card &b) ;
+bool operator==(const Card &a, const Card &b) ;
+bool operator!=(const Card &a, const Card &b) ;
+bool operator<(const Card &a, const Card &b) ;
 
 std::ostream& operator<< (std::ostream& os, const Card & card) ;
 

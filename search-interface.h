@@ -21,7 +21,7 @@ private:
 
 class SearchState {
 public:
-    SearchState(GameState state) : state_(state) {}
+    explicit SearchState(GameState state) : state_(state) {}
 
 	bool isFinal() const;
 	std::vector<SearchAction> actions() const;
@@ -30,6 +30,7 @@ public:
     static unsigned long long nbExpanded();
 
     friend std::ostream& operator<< (std::ostream& os, const SearchState & state) ;
+    friend bool operator<(const SearchState &a, const SearchState &b) ;
 private:
 	void runSafeMoves_();
 	GameState state_;

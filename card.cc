@@ -48,3 +48,7 @@ bool operator==(const Card &a, const Card &b) {
 bool operator!=(const Card &a, const Card &b) {
 	return !(a == b);
 }
+
+bool operator<(const Card &a, const Card &b) {
+    return std::tie(a.color, a.value) < std::tie(b.color, b.value);
+}

@@ -27,6 +27,9 @@ struct GameState {
     void recalculatePointerArrays_(void) ;
 };
 
+bool operator<(const GameState &lhs, const GameState &rhs);
+bool operator==(const GameState &lhs, const GameState &rhs);
+
 enum class LocationClass {FreeCells, Homes, Stacks};
 struct Location {
 	LocationClass cl;

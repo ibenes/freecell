@@ -9,6 +9,10 @@ unsigned long long SearchState::nbExpanded() {
     return SearchState::nb_expanded;
 }
 
+bool operator<(const SearchState &a, const SearchState &b) {
+    return a.state_ < b.state_;
+}
+
 SearchState SearchAction::execute(const SearchState& state) const {
 	SearchState new_state(state);
 	bool succeeded = new_state.execute(from_, to_);

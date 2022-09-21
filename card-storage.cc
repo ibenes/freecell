@@ -1,5 +1,26 @@
 #include "card-storage.h"
 
+bool operator< (const std::optional<Card> &lhs, const std::optional<Card> rhs) {
+    if (lhs.has_value()) {
+        if (rhs.has_value())
+            return *lhs < *rhs;
+        else
+            return false;
+    } else {
+        return false;
+    }
+}
+
+bool operator== (const std::optional<Card> &lhs, const std::optional<Card> rhs) {
+    if (lhs.has_value() && rhs.has_value()) {
+        return *lhs == *rhs;
+    } else if (!lhs.has_value() && !rhs.has_value()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 bool HomeDestination::canAccept(const Card & card) const {
     if (storage_.size() == 0) {
 		return card.value == 1;
@@ -23,6 +44,22 @@ const std::optional<Card> HomeDestination::topCard() const {
 		return storage_.back();
 	else
 		return std::nullopt;
+}
+
+bool operator< (const HomeDestination &lhs, const HomeDestination &rhs) {
+    return lhs.topCard() < rhs.topCard();
+}
+
+bool operator== (const HomeDestination &lhs, const HomeDestination &rhs) {
+    return lhs.topCard() == rhs.topCard();
+}
+
+bool operator< (const WorkStack &lhs, const WorkStack &rhs) {
+    return lhs.storage_ < rhs.storage_;
+}
+
+bool operator== (const WorkStack &lhs, const WorkStack &rhs) {
+    return lhs.storage_ == rhs.storage_;
 }
 
 
@@ -71,6 +108,14 @@ std::optional<Card> FreeCell::getCard() {
 	auto card = std::move(cell_);
 	cell_.reset();
 	return card;
+}
+
+bool operator< (const FreeCell &lhs, const FreeCell &rhs) {
+    return lhs.topCard() < rhs.topCard();
+}
+
+bool operator== (const FreeCell &lhs, const FreeCell &rhs) {
+    return lhs.topCard() == rhs.topCard();
 }
 
 std::ostream& operator<< (std::ostream& os, const FreeCell & fc) {

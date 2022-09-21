@@ -31,6 +31,9 @@ private:
     std::vector<Card> storage_;
 };
 
+bool operator< (const HomeDestination &lhs, const HomeDestination &rhs) ;
+bool operator== (const HomeDestination &lhs, const HomeDestination &rhs) ;
+
 
 class WorkStack : public CardStorage {
 public:
@@ -46,10 +49,15 @@ public:
     void forceCard(const Card & card);
 
     friend std::ostream& operator<< (std::ostream& os, const WorkStack & stack) ;
+    friend bool operator< (const WorkStack &lhs, const WorkStack &rhs) ;
+    friend bool operator== (const WorkStack &lhs, const WorkStack &rhs) ;
 
 private:
     std::vector<Card> storage_;
 };
+
+bool operator< (const WorkStack &lhs, const WorkStack &rhs) ;
+bool operator== (const WorkStack &lhs, const WorkStack &rhs) ;
 
 
 class FreeCell : public CardStorage {
@@ -66,6 +74,9 @@ public:
 private:
     std::optional<Card> cell_;
 };
+
+bool operator< (const FreeCell &lhs, const FreeCell &rhs) ;
+bool operator== (const FreeCell &lhs, const FreeCell &rhs) ;
 
 std::ostream& operator<< (std::ostream& os, const FreeCell & fc) ;
 

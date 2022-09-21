@@ -55,10 +55,20 @@ TEST_CASE("Card construction and printing tests") {
 	REQUIRE(render_color_map.at(Card{Color::Diamond, 7}.color) == render_color_map.at(Card{Color::Heart, 7}.color));
 }
 
-TEST_CASE("Card equality tests") {
+TEST_CASE("Card comparison tests") {
 	REQUIRE(Card{Color::Heart, 1} == Card{Color::Heart, 1});
 	REQUIRE(Card{Color::Spade, 1} != Card{Color::Heart, 1});
 	REQUIRE(Card{Color::Heart, 2} != Card{Color::Heart, 1});
+
+
+	REQUIRE(Card{Color::Heart, 1} < Card{Color::Heart, 2});
+	REQUIRE(Card{Color::Heart, 1} < Card{Color::Diamond, 1});
+	REQUIRE(Card{Color::Heart, king_value} < Card{Color::Diamond, 1});
+	REQUIRE(Card{Color::Diamond, 1} < Card{Color::Club, 1});
+	REQUIRE(Card{Color::Club, 1} < Card{Color::Spade, 1});
+
+	REQUIRE_FALSE(Card{Color::Heart, 1} < Card{Color::Heart, 1});
+	REQUIRE_FALSE(Card{Color::Heart, 2} < Card{Color::Heart, 1});
 }
 
 TEST_CASE("FreeCell operations") {
@@ -77,6 +87,13 @@ TEST_CASE("FreeCell operations") {
 	REQUIRE(cardRepresentation(*free_cell.getCard()) == "1h");
 
 	REQUIRE(freeCellRepresentation(free_cell) == "_");
+}
+
+TEST_CASE("FreeCell comparisons") {
+    FreeCell a, b;
+	REQUIRE(a == b);
+	REQUIRE_FALSE(a < b);
+	REQUIRE_FALSE(b < a);
 }
 
 TEST_CASE("Home destiation operations") {
@@ -344,6 +361,15 @@ TEST_CASE("Finding home for card") {
     REQUIRE(findHomeFor(gs, {Color::Diamond, 1}) == gs.homes.begin()+1);
     REQUIRE(findHomeFor(gs, {Color::Spade, 1}) == gs.homes.begin()+1);
     REQUIRE(findHomeFor(gs, {Color::Heart, 3}) == gs.homes.begin()+0);
+}
+
+
+TEST_CASE("GameState comparisons") {
+    GameState a, b;
+
+	REQUIRE(a == b);
+	REQUIRE_FALSE(a < b);
+	REQUIRE_FALSE(b < a);
 }
 
 
