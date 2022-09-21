@@ -7,7 +7,7 @@
 
 class DummySearch : public SearchStrategyItf {
 public:
-	DummySearch(size_t max_depth, size_t nb_attempts, std::default_random_engine &rng);
+	DummySearch(size_t max_depth, size_t nb_attempts);
 	std::vector<SearchAction> solve(const SearchState &init_state) override ;
 
 private:

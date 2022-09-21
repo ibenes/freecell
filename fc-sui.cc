@@ -79,10 +79,9 @@ int main(int argc, const char *argv[]) {
         std::exit(2);
     }
 
-    std::random_device dev;
     std::default_random_engine rng(parser.get<int>("seed"));
 
-	std::unique_ptr<SearchStrategyItf> search_strategy = std::make_unique<DummySearch>(500, 5, rng);
+	std::unique_ptr<SearchStrategyItf> search_strategy = std::make_unique<DummySearch>(500, 5);
     StrategyEvaluation evaluation_record{};
 
     auto nb_games = parser.get<int>("nb_games");

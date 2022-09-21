@@ -4,10 +4,10 @@
 #include <thread>
 #include <algorithm>
 
-DummySearch::DummySearch(size_t max_depth, size_t nb_attempts, std::default_random_engine &rng) :
-		max_depth_(max_depth),
-		nb_attempts_(nb_attempts),
-		rng_(rng) {
+DummySearch::DummySearch(size_t max_depth, size_t nb_attempts) :
+        max_depth_(max_depth),
+        nb_attempts_(nb_attempts),
+        rng_(1337) {
 	; // just for initializer list	
 }
 
