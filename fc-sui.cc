@@ -66,10 +66,24 @@ void eval_strategy(
 }
 
 
+std::unique_ptr<InitialStateProducerItf> getProducer(const argparse::ArgumentParser &parser) {
+    auto difficulty = parser.get<int>("--easy-mode");
+    auto seed = parser.get<int>("seed");
+
+    if (difficulty < 0) {
+        return std::make_unique<RandomProducer>(seed);
+    } else {
+        return std::make_unique<EasyProducer>(seed, difficulty);
+    }
+}
+
+
 int main(int argc, const char *argv[]) {
     argparse::ArgumentParser parser("FreeCell@SUI");
     parser.add_argument("nb_games").scan<'d', int>();
     parser.add_argument("seed").scan<'d', int>();
+
+    parser.add_argument("--easy-mode").default_value(-1).scan<'d', int>();
 
     try {
         parser.parse_args(argc, argv);
@@ -79,17 +93,15 @@ int main(int argc, const char *argv[]) {
         std::exit(2);
     }
 
-    std::default_random_engine rng(parser.get<int>("seed"));
+    std::unique_ptr<InitialStateProducerItf> producer = getProducer(parser);
 
 	std::unique_ptr<SearchStrategyItf> search_strategy = std::make_unique<DummySearch>(500, 5);
     StrategyEvaluation evaluation_record{};
 
     auto nb_games = parser.get<int>("nb_games");
     for (int i = 0; i < nb_games; ++i) {
-        GameState gs{};
-        initializeFullRandom(&gs, rng);
+        GameState gs = producer->produce();
         SearchState init_state(gs);
-
         eval_strategy(search_strategy, init_state, &evaluation_record);
     }
 

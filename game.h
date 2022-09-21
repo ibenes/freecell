@@ -60,4 +60,28 @@ Location locFromPtr(const GameState &gs, const CardStorage *ptr) ;
 
 std::vector<RawMove> safeHomeMoves(const GameState &gs) ;
 
+class InitialStateProducerItf {
+public:
+    virtual GameState produce() =0;
+    virtual ~InitialStateProducerItf() {};
+};
+
+class RandomProducer : public InitialStateProducerItf {
+public:
+    RandomProducer(int seed) : rng_(seed) {}
+    GameState produce() override;
+private:
+    std::default_random_engine rng_;
+};
+
+class EasyProducer : public InitialStateProducerItf {
+public:
+    EasyProducer(int seed, int difficulty) : rng_(seed), difficulty_(difficulty) {}
+    GameState produce() override;
+private:
+    std::default_random_engine rng_;
+    int difficulty_;
+};
+
+
 #endif

@@ -325,3 +325,25 @@ std::ostream& operator<< (std::ostream& os, const Location & loc) {
 
     return os;
 }
+
+GameState EasyProducer::produce() {
+    GameState gs;
+
+    initializeGameState(&gs, rng_);
+    for (int i = 0; i < difficulty_; ++i) {
+        auto move = findIrreversibleMove(&gs, rng_);
+        if (!move.has_value())
+            break;
+        forceMove(move->first, move->second); 
+    }
+
+    return gs;
+}
+
+GameState RandomProducer::produce() {
+    GameState gs;
+    initializeFullRandom(&gs, rng_);
+
+    return gs;
+}
+
