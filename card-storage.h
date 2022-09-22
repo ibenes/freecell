@@ -54,6 +54,9 @@ public:
 
 private:
     std::vector<Card> storage_;
+
+public:
+    const decltype(storage_) &storage() const {return storage_;}
 };
 
 bool operator< (const WorkStack &lhs, const WorkStack &rhs) ;
