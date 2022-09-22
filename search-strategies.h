@@ -2,7 +2,9 @@
 #define SEARCH_STRATEGIES_H
 
 #include "search-interface.h"
+#include "game.h"
 
+#include <memory>
 #include <vector>
 
 class DummySearch : public SearchStrategyItf {
@@ -14,6 +16,51 @@ private:
 	size_t max_depth_;
 	size_t nb_attempts_;
 	std::default_random_engine rng_;
+};
+
+
+class BreadthFirstSearch : public SearchStrategyItf {
+public:
+	std::vector<SearchAction> solve(const SearchState &init_state) override ;
+};
+
+class DepthFirstSearch : public SearchStrategyItf {
+public:
+    DepthFirstSearch(int depth_limit) : depth_limit_(depth_limit) {}
+	std::vector<SearchAction> solve(const SearchState &init_state) override ;
+private:
+    int depth_limit_;
+};
+
+
+class AStarHeuristicItf {
+public:
+    virtual double distanceLowerBound(const GameState &state) const =0;
+};
+
+
+class AStarSearch : public SearchStrategyItf {
+public:
+    AStarSearch(std::unique_ptr<AStarHeuristicItf> &&heuristic) : 
+        heuristic_(std::move(heuristic)) 
+        {}
+	std::vector<SearchAction> solve(const SearchState &init_state) override ;
+
+private:
+    const std::unique_ptr<AStarHeuristicItf> heuristic_;
+};
+
+double compute_heuristic(const SearchState &state, AStarHeuristicItf *heuristic);
+
+// beware, this has been proven to NOT be a valid heuristic!
+class OufOfHome_Pseudo : public AStarHeuristicItf {
+public:
+    double distanceLowerBound(const GameState &state) const override;
+};
+
+class StudentHeuristic : public AStarHeuristicItf {
+public:
+    double distanceLowerBound(const GameState &state) const override;
 };
 
 #endif

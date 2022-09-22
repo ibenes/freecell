@@ -77,6 +77,38 @@ std::unique_ptr<InitialStateProducerItf> getProducer(const argparse::ArgumentPar
     }
 }
 
+std::unique_ptr<AStarHeuristicItf> getHeuristic(const argparse::ArgumentParser &parser) {
+    auto heuristic_name = parser.get<std::string>("--heuristic");
+
+    if (heuristic_name == "nb_not_home") {
+        return std::make_unique<OufOfHome_Pseudo>();
+    } else if (heuristic_name == "student") {
+	    return std::make_unique<StudentHeuristic>();
+    } else {
+        std::cerr << "Unknown heuristic name '" << heuristic_name << "'\n";
+        std::cerr << "Supported are: nb_not_home, student\n";
+        std::exit(2);
+    }
+}
+
+std::unique_ptr<SearchStrategyItf> getSolver(const argparse::ArgumentParser &parser) {
+    auto solver_name = parser.get<std::string>("--solver");
+
+    if (solver_name == "dummy") {
+        return std::make_unique<DummySearch>(500, 5);
+    } else if (solver_name == "bfs") {
+	    return std::make_unique<BreadthFirstSearch>();
+    } else if (solver_name == "a_star") {
+        return std::make_unique<AStarSearch>(getHeuristic(parser));
+    } else if (solver_name == "dfs") {
+        return std::make_unique<DepthFirstSearch>(parser.get<int>("--dls-limit"));
+    } else {
+        std::cerr << "Unknown solver name '" << solver_name << "'\n";
+        std::cerr << "Supported are: dummy, bfs, a_star, dfs\n";
+        std::exit(2);
+    }
+}
+
 
 int main(int argc, const char *argv[]) {
     argparse::ArgumentParser parser("FreeCell@SUI");
@@ -84,6 +116,9 @@ int main(int argc, const char *argv[]) {
     parser.add_argument("seed").scan<'d', int>();
 
     parser.add_argument("--easy-mode").default_value(-1).scan<'d', int>();
+    parser.add_argument("--solver").default_value(std::string("dummy"));
+    parser.add_argument("--heuristic").default_value(std::string("nb_not_home"));
+    parser.add_argument("--dls-limit").default_value(1000000).scan<'d', int>();
 
     try {
         parser.parse_args(argc, argv);
@@ -94,8 +129,8 @@ int main(int argc, const char *argv[]) {
     }
 
     std::unique_ptr<InitialStateProducerItf> producer = getProducer(parser);
+    std::unique_ptr<SearchStrategyItf> search_strategy = getSolver(parser);
 
-	std::unique_ptr<SearchStrategyItf> search_strategy = std::make_unique<DummySearch>(500, 5);
     StrategyEvaluation evaluation_record{};
 
     auto nb_games = parser.get<int>("nb_games");

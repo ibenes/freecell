@@ -8,6 +8,8 @@
 
 class SearchState;
 
+class AStarHeuristicItf;
+
 class SearchAction {
 public:
 	SearchAction(Location from, Location to) : from_(from), to_(to) {} ;
@@ -31,11 +33,13 @@ public:
 
     friend std::ostream& operator<< (std::ostream& os, const SearchState & state) ;
     friend bool operator<(const SearchState &a, const SearchState &b) ;
+    friend double compute_heuristic(const SearchState &state, const AStarHeuristicItf &heuristic);
 private:
 	void runSafeMoves_();
 	GameState state_;
     static unsigned long long nb_expanded;
 };
+
 
 class SearchStrategyItf {
 public:
