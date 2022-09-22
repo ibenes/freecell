@@ -72,11 +72,11 @@ std::unique_ptr<SearchStrategyItf> getSolver(const argparse::ArgumentParser &par
     if (solver_name == "dummy") {
         return std::make_unique<DummySearch>(500, 5);
     } else if (solver_name == "bfs") {
-	    return std::make_unique<BreadthFirstSearch>();
-    } else if (solver_name == "a_star") {
-        return std::make_unique<AStarSearch>(getHeuristic(parser));
+	    return std::make_unique<BreadthFirstSearch>(parser.get<size_t>("--mem-limit"));
     } else if (solver_name == "dfs") {
-        return std::make_unique<DepthFirstSearch>(parser.get<int>("--dls-limit"));
+        return std::make_unique<DepthFirstSearch>(parser.get<int>("--dls-limit"), parser.get<size_t>("--mem-limit"));
+    } else if (solver_name == "a_star") {
+        return std::make_unique<AStarSearch>(getHeuristic(parser), parser.get<size_t>("--mem-limit"));
     } else {
         std::cerr << "Unknown solver name '" << solver_name << "'\n";
         std::cerr << "Supported are: dummy, bfs, a_star, dfs\n";

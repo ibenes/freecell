@@ -21,15 +21,21 @@ private:
 
 class BreadthFirstSearch : public SearchStrategyItf {
 public:
+    BreadthFirstSearch(size_t mem_limit) : mem_limit_(mem_limit) {}
 	std::vector<SearchAction> solve(const SearchState &init_state) override ;
+
+private:
+    size_t mem_limit_;
 };
 
 class DepthFirstSearch : public SearchStrategyItf {
 public:
-    DepthFirstSearch(int depth_limit) : depth_limit_(depth_limit) {}
+    DepthFirstSearch(int depth_limit, size_t mem_limit) :
+        depth_limit_(depth_limit), mem_limit_(mem_limit) {}
 	std::vector<SearchAction> solve(const SearchState &init_state) override ;
 private:
     int depth_limit_;
+    size_t mem_limit_;
 };
 
 
@@ -41,13 +47,15 @@ public:
 
 class AStarSearch : public SearchStrategyItf {
 public:
-    AStarSearch(std::unique_ptr<AStarHeuristicItf> &&heuristic) : 
-        heuristic_(std::move(heuristic)) 
+    AStarSearch(std::unique_ptr<AStarHeuristicItf> &&heuristic, size_t mem_limit) : 
+        heuristic_(std::move(heuristic)),
+        mem_limit_(mem_limit)
         {}
 	std::vector<SearchAction> solve(const SearchState &init_state) override ;
 
 private:
     const std::unique_ptr<AStarHeuristicItf> heuristic_;
+    size_t mem_limit_;
 };
 
 double compute_heuristic(const SearchState &state, AStarHeuristicItf *heuristic);
