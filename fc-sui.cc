@@ -3,41 +3,17 @@
 #include "search-interface.h"
 #include "search-strategies.h"
 
+#include "evaluation-type.h"
 #include "argparse.h"
+#include "mem_watch.h"
 
 #include <cassert>
 #include <chrono>
 #include <iostream>
 #include <memory>
 
-
-struct StrategyEvaluation {
-    unsigned long nb_solved;
-    unsigned long nb_failed;
-    unsigned long total_solution_length;
-    unsigned long long nb_states_expanded;
-    std::chrono::microseconds time_taken;
-};
-
-std::ostream& operator<< (std::ostream& os, const StrategyEvaluation &report) {
-    if (report.nb_solved > 0) {
-        os << "Solved " << report.nb_solved << " / " << report.nb_solved + report.nb_failed <<
-            " [ " << 100.0*report.nb_solved / (report.nb_solved + report.nb_failed) << " % ]. " <<
-            "Avg solution length " << 1.0 * report.total_solution_length / report.nb_solved << " steps, "
-            "Avg time taken: " << (report.time_taken / report.nb_solved).count() << " us " <<
-            "Total #states expaned: " << report.nb_states_expanded << 
-            "\n";
-    } else {
-        os << "Solved " << report.nb_solved << " / " << report.nb_solved + report.nb_failed <<
-            " [ 0 % ]. " <<
-            "Avg solution length NA steps, " <<
-            "Avg time taken: NA us " <<
-            "Total #states expaned: " << report.nb_states_expanded << 
-            "\n";
-    }
-
-    return os;
-}
+#include <thread>
+#include <atomic>
 
 
 void eval_strategy(
@@ -64,7 +40,6 @@ void eval_strategy(
     }
     report->nb_states_expanded = SearchState::nbExpanded();
 }
-
 
 std::unique_ptr<InitialStateProducerItf> getProducer(const argparse::ArgumentParser &parser) {
     auto difficulty = parser.get<int>("--easy-mode");
@@ -118,7 +93,8 @@ int main(int argc, const char *argv[]) {
     parser.add_argument("--easy-mode").default_value(-1).scan<'d', int>();
     parser.add_argument("--solver").default_value(std::string("dummy"));
     parser.add_argument("--heuristic").default_value(std::string("nb_not_home"));
-    parser.add_argument("--dls-limit").default_value(1000000).scan<'d', int>();
+    parser.add_argument("--dls-limit").default_value(1'000'000).scan<'d', int>();
+    parser.add_argument("--mem-limit").default_value(2'000'000'000).scan<'d', size_t>();
 
     try {
         parser.parse_args(argc, argv);
@@ -128,10 +104,17 @@ int main(int argc, const char *argv[]) {
         std::exit(2);
     }
 
+    StrategyEvaluation evaluation_record;
+
+    MemWatcher mem_watcher(
+        parser.get<size_t>("--mem-limit"),
+        std::chrono::milliseconds(1000),
+        evaluation_record
+    );
+    std::thread thread_mem_watch(&MemWatcher::run, &mem_watcher);
+
     std::unique_ptr<InitialStateProducerItf> producer = getProducer(parser);
     std::unique_ptr<SearchStrategyItf> search_strategy = getSolver(parser);
-
-    StrategyEvaluation evaluation_record{};
 
     auto nb_games = parser.get<int>("nb_games");
     for (int i = 0; i < nb_games; ++i) {
@@ -139,6 +122,9 @@ int main(int argc, const char *argv[]) {
         SearchState init_state(gs);
         eval_strategy(search_strategy, init_state, &evaluation_record);
     }
+
+    mem_watcher.kill();
+    thread_mem_watch.join();
 
     std::cout << evaluation_record;
 }
