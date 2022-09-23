@@ -20,6 +20,7 @@ public:
 
 class HomeDestination : public CardStorage {
 public:
+	static bool canSitOn(const Card &base, const Card &candidate);
 	bool canAccept(const Card & card) const override;
     bool acceptCard(const Card & card) override;
     const std::optional<Card> topCard() const override;
@@ -37,6 +38,7 @@ bool operator== (const HomeDestination &lhs, const HomeDestination &rhs) ;
 
 class WorkStack : public CardStorage {
 public:
+	static bool canSitOn(const Card &base, const Card &candidate);
 	bool canAccept(const Card & card) const override;
     bool acceptCard(const Card & card) override;
     const std::optional<Card> topCard() const override;

@@ -21,14 +21,15 @@ bool operator== (const std::optional<Card> &lhs, const std::optional<Card> rhs) 
     }
 }
 
+bool HomeDestination::canSitOn(const Card &base, const Card &candidate) {
+	return candidate.color == base.color && candidate.value == base.value + 1;
+}
+
 bool HomeDestination::canAccept(const Card & card) const {
-    if (storage_.size() == 0) {
+    if (storage_.size() == 0)
 		return card.value == 1;
-    } else {
-		bool matching_color = card.color == topCard()->color;
-		bool one_higher = card.value == topCard()->value + 1;
-		return matching_color && one_higher;
-    }
+    else
+		return canSitOn(*topCard(), card);
 }
 
 bool HomeDestination::acceptCard(const Card & card) {
@@ -129,15 +130,18 @@ std::ostream& operator<< (std::ostream& os, const FreeCell & fc) {
     return os;
 }
 
+bool WorkStack::canSitOn(const Card &base, const Card &candidate) {
+	bool oppposing_render_color = render_color_map.at(candidate.color) != render_color_map.at(base.color);
+	bool one_less = candidate.value == base.value - 1;
+	return oppposing_render_color && one_less;
+}
+
 
 bool WorkStack::canAccept(const Card & card) const {
-    if (storage_.size() == 0) {
+    if (storage_.size() == 0)
         return true;
-    } else {
-		bool oppposing_render_color = render_color_map.at(card.color) != render_color_map.at(topCard()->color);
-		bool one_less = card.value == topCard()->value - 1;
-		return oppposing_render_color && one_less;
-    }
+    else
+		return canSitOn(*topCard(), card);
 }
 
 bool WorkStack::acceptCard(const Card & card) {
