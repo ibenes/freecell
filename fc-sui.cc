@@ -107,7 +107,7 @@ int main(int argc, const char *argv[]) {
     StrategyEvaluation evaluation_record;
 
     MemWatcher mem_watcher(
-        parser.get<size_t>("--mem-limit"),
+        parser.get<int>("--mem-limit"),
         std::chrono::milliseconds(1000),
         evaluation_record
     );
