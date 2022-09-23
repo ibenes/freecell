@@ -23,7 +23,6 @@ struct HumanReadable {
 void MemWatcher::run() const {
     while (!stop_) {
         auto mem = getCurrentRSS();
-        std::cout << "MEM: " << HumanReadable{mem} << "\n";
         
         if (mem > mem_limit_) {
             std::cout << report_;
