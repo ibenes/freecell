@@ -94,7 +94,7 @@ int main(int argc, const char *argv[]) {
     parser.add_argument("--solver").default_value(std::string("dummy"));
     parser.add_argument("--heuristic").default_value(std::string("nb_not_home"));
     parser.add_argument("--dls-limit").default_value(1'000'000).scan<'d', int>();
-    parser.add_argument("--mem-limit").default_value(2'000'000'000).scan<'d', size_t>();
+    parser.add_argument("--mem-limit").default_value(std::size_t{2'147'483'648}).scan<'u', size_t>();
 
     try {
         parser.parse_args(argc, argv);
