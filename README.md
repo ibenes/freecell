@@ -34,5 +34,5 @@ The A* with the default `nb_not_home` heuristic can realistically solve deals up
 
 #### Memory usage
 Breadth-first strategies can get really wild allocating all the states to explore.
-Maximal memory consumption can be limited using `--memory-limit NB_BYTES`.
+Maximal memory consumption can be limited using `--mem-limit NB_BYTES`.
 If the program takes more than `NB_BYTES` in resident memory usage, it aborts itself.
