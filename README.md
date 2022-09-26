@@ -6,6 +6,7 @@ It serves as a basis for student homework in Artificial Intelligence and Machine
 Simply run `make`.
 Requires C++17-able compiler.
 The Makefile assumes POSIX threads as available implementation for `std::thread`, but this can be replaced in the linking step.
+For Windows users it is required to link PSAPI library in the makefile with `-lpsapi` in `fc-sui:`.
 
 ## Usage
 The build process results in binary `fc-sui`, which expects two positional arguments:
