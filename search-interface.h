@@ -33,6 +33,7 @@ public:
 
     friend std::ostream& operator<< (std::ostream& os, const SearchState & state) ;
     friend bool operator<(const SearchState &a, const SearchState &b) ;
+    friend bool operator==(const SearchState &a, const SearchState &b) ;
     friend double compute_heuristic(const SearchState &state, const AStarHeuristicItf &heuristic);
 private:
 	void runSafeMoves_();
