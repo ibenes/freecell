@@ -74,8 +74,6 @@ public:
     const std::optional<Card> topCard() const override;
     std::optional<Card> getCard() override;
 
-    Card const * card() const;
-
 private:
     std::optional<Card> cell_;
 };
