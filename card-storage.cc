@@ -1,16 +1,5 @@
 #include "card-storage.h"
 
-bool operator< (const std::optional<Card> &lhs, const std::optional<Card> rhs) {
-    if (lhs.has_value()) {
-        if (rhs.has_value())
-            return *lhs < *rhs;
-        else
-            return false;
-    } else {
-        return false;
-    }
-}
-
 bool operator== (const std::optional<Card> &lhs, const std::optional<Card> rhs) {
     if (lhs.has_value() && rhs.has_value()) {
         return *lhs == *rhs;
