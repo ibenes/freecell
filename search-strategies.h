@@ -58,8 +58,6 @@ private:
     size_t mem_limit_;
 };
 
-double compute_heuristic(const SearchState &state, AStarHeuristicItf *heuristic);
-
 // beware, this has been proven to NOT be a valid heuristic!
 class OufOfHome_Pseudo : public AStarHeuristicItf {
 public:
