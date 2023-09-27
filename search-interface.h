@@ -16,6 +16,9 @@ public:
 	SearchState execute(const SearchState& state) const ;
 
     friend std::ostream& operator<< (std::ostream& os, const SearchAction & action) ;
+
+    const Location& from() const;
+    const Location& to() const;
 private:
 	Location from_;
 	Location to_;
@@ -28,7 +31,7 @@ public:
 	bool isFinal() const;
 	std::vector<SearchAction> actions() const;
 
-	bool execute(Location from, Location to);
+	bool execute(const SearchAction &action);
     static unsigned long long nbExpanded();
 
     friend std::ostream& operator<< (std::ostream& os, const SearchState & state) ;

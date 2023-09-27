@@ -15,15 +15,23 @@ bool operator<(const SearchState &a, const SearchState &b) {
 
 SearchState SearchAction::execute(const SearchState& state) const {
 	SearchState new_state(state);
-	bool succeeded = new_state.execute(from_, to_);
+	bool succeeded = new_state.execute(*this);
 	assert(succeeded);
 
 	return new_state;
 }
 
-bool SearchState::execute(Location from, Location to) {
-	auto from_ptr = ptrFromLoc(state_, from);
-	auto to_ptr = ptrFromLoc(state_, to);
+const Location& SearchAction::from() const {
+    return from_;
+}
+
+const Location& SearchAction::to() const {
+    return to_;
+}
+
+bool SearchState::execute(const SearchAction& action) {
+	auto from_ptr = ptrFromLoc(state_, action.from());
+	auto to_ptr = ptrFromLoc(state_, action.to());
 
 	if (!moveLegal(from_ptr, to_ptr))
 		return false;
