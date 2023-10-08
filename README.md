@@ -16,7 +16,7 @@ On top of that, a solver can be picked (`--solver`), currently allowing:
 * restarting greedy 1-path search (`dummy`)
 * breadth-first search (`bfs`)
 * depth-first search (`dfs`)
-  * has a depth limit controlled by `--depth-limit`
+  * has a depth limit controlled by `--dls-limit`
 * and A* (`a_star`) which allows to select heuristic:
   * Number of cards not in their home destinations (`nb_not_home`). BEWARE: This is not a proper optimistic heuristic!
   * Custom one (`student`).
