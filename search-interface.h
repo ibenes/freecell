@@ -38,6 +38,8 @@ public:
     friend bool operator<(const SearchState &a, const SearchState &b) ;
     friend bool operator==(const SearchState &a, const SearchState &b) ;
     friend double compute_heuristic(const SearchState &state, const AStarHeuristicItf &heuristic);
+    friend size_t hash(const SearchState &state);
+
 private:
 	void runSafeMoves_();
 	GameState state_;
