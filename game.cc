@@ -302,10 +302,31 @@ std::ostream& operator<< (std::ostream& os, const GameState & state) {
         state.free_cells[2] << " " <<
         state.free_cells[3] << "\n";
 
-    for (auto stack : state.stacks) {
+#ifdef CONSOLE_VERTICAL_STACKS
+    size_t s = 0;
+    for (const auto &stack : state.stacks) {
+        s = std::max(s, stack.storage().size());
+    }
+    for (size_t i = 0; i < s; ++i) {
+        for (const auto &stack : state.stacks) {
+            if (stack.storage().size() <= i) {
+#ifdef CONSOLE_COLORS
+                os << "     ";
+#else
+                os << "    ";
+#endif
+            }
+            else {
+                os << stack.storage()[i] << " ";
+            }
+        }
+        os << "\n";
+    }
+#else
+    for (const auto &stack : state.stacks) {
         os << stack << "\n";
     }
-
+#endif
     return os;
 }
 
